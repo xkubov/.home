@@ -1,0 +1,115 @@
+[core]
+	editor = vim
+
+[user]
+	name = Peter Kubov
+	email = peter.kubov@avast.com
+
+[color]
+	ui = true
+
+[grep]
+	linenumber = true
+
+[rerere]
+	enabled = true
+
+[diff]
+	renames = copies
+
+[merge]
+	tool = vimdiff
+	stat = true
+	summary = true
+	log = true
+
+[alias]
+	check-arg = !test -z "$1" && ( echo "Provide name of branch" && exit 1) || exit 0 && true
+	# add shortcuts
+	a = add
+	ac = !git add $(git ls-files -m | uniq)
+	ad = !git add $(git shd)
+	an = !git add $(git shn)
+	ap = add -p
+
+	# branch shortcuts
+	b = branch
+	bd = branch -D
+	br = branch -r
+
+	# commit shortcuts
+	c = commit
+	ca = commit --amend
+	cm = commit -m
+	cv = commit -v
+
+	# checkout shortcuts
+	ch  = checkout
+	chb = checkout -b
+	chm = checkout master
+	chmp = !git checkout master && git pull
+	chrm = !git check-arg $1 && git ch "$1" && git r master
+	chmy = checkout --ours
+	chthy = checkout --theirs
+	chmy-all = !git chmy $(git ls-files -m | uniq)
+	chthy-all = !git chthy $(git ls-files -m | uniq)
+
+	cl = clone
+
+	# cherry-pick
+	cp = cherry-pick
+
+	# fetch
+	f = fetch
+	fu = fetch upstream
+
+	# shows a nice tree of the whole repository
+	l = log
+	ln = log --oneline --decorate --all --graph
+
+	# merge shortcut
+	m = merge
+	ma = merge --abort
+	mc = merge --continue
+
+	# push
+	p = push
+	po = push origin
+	pm = push origin master
+
+	# rebase shortcuts
+	r  = rebase
+	ra = rebase --abort
+	rc = rebase --continue
+	ri = rebase -i
+	rm = rebase master
+	ru = rebase upstream/master
+	rim = rebase -i master
+	riu = rebase -i upstream/master
+
+	# reset shortcuts
+	rst = reset
+	rsth = reset HEAD~
+
+	# removes new files in repository
+	rmn = !git shn | xargs rm
+
+	# reset shortcut
+	rst = reset
+
+	# status shortcuts
+	s = status
+
+	sh = show
+
+	# lists deleted files in repository
+	shd = !git ls-files -d
+
+	# lists new files in repository
+	shn = !git ls-files -o --exclude-standard --full-name
+
+	shm = !git ls-files -m
+
+	st = stash
+	stp = stash pop
+	std = stash drop
