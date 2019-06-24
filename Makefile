@@ -88,6 +88,15 @@ will-save:
 	@test -f $(SAVE) && rm -rf $(SAVE) || true
 	@test -d $(SAVE) || mkdir -p $(SAVE)
 
+mac:
+	@/usr/bin/ruby -e "`curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install`"
+	sudo scutil --set HostName xxx
+
+brew:
+	brew install nvim
+	brew install openconnect
+	brew install tmux
+
 .PHONY:
 help:
 	@echo "Home installation Makefile."
