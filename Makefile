@@ -88,6 +88,11 @@ will-save:
 	@test -f $(SAVE) && rm -rf $(SAVE) || true
 	@test -d $(SAVE) || mkdir -p $(SAVE)
 
+sshc:
+	mkdir -p $(HOME)/.ssh
+	rm -rf $(HOME)/.ssh/config
+	ln -s $(PROJECT)/ssh/config $(HOME)/.ssh/config
+
 mac:
 	@/usr/bin/ruby -e "`curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install`"
 	sudo scutil --set HostName xxx
