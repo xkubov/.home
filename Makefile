@@ -10,7 +10,7 @@ TMUXDIR=$(PROJECT)/tmux
 
 SAVE="$(HOME)/old_env_save"
 
-all: core tmuxc
+all: core tmuxc scripts
 
 core: bashc vimc fzfc gitc sshc
 
@@ -101,6 +101,12 @@ brew:
 	brew install nvim
 	brew install openconnect
 	brew install tmux
+	brew install bash
+	brew install coreutils
+	brew install cmake
+
+scripts:
+	ln -s $(PROJECT)/.scripts $(HOME)/.scripts
 
 .PHONY:
 help:

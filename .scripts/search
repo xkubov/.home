@@ -1,0 +1,8 @@
+#!/bin/bash
+
+SEARCH=$1
+shift
+
+COMMAND="find . -type f $@ | xargs grep ${SEARCH}"
+
+eval $COMMAND

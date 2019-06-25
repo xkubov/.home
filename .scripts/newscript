@@ -1,0 +1,36 @@
+#!/bin/bash
+
+SCRIPT_NAME=""
+SCRIPT=bash
+
+
+function panic()
+{
+	ERR_CODE=1
+	test ! -z ${2} && ERR_CODE=${2}
+	echo "${MY_NAME}: ${1}" && exit ${ERR_CODE}
+}
+
+function set_env()
+{
+	test -z ${MY_NAME} && MY_NAME=${0}
+
+	test -z ${1} && panic "You must provide srcipt name!"
+	SCRIPT_NAME=${1}
+
+	test ! -z ${2} && SCRIPT=${SCRIPT}
+}
+
+function create_script()
+{
+	echo "#!/bin/${SCRIPT}" >> ~/.scripts/${SCRIPT_NAME}
+	chmod +x ~/.scripts/${SCRIPT_NAME}
+}
+
+# function main()
+{
+	set_env ${@}
+
+	create_script
+	open ${SCRIPT_NAME}
+}

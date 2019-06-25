@@ -1,0 +1,160 @@
+#!/bin/bash
+
+_targets="i686-w64-mingw32 x86_64-w64-mingw32"
+
+export PREFIX=$HOME/mingw64
+export PATH="$PREFIX/bin:$PATH"
+export LIBRARY_PATH="$PREFIX/lib"
+
+alias make="make"
+pkgver=4.7.2
+binutilsver=2.23
+mingwver=2.0.8
+texinfover=4.12
+ncurver=5.7
+srcdir=$(realpath .)
+
+function build_ncurses()
+{
+	wget http://ftp.gnu.org/pub/gnu/ncurses/ncurses-${ncurver}.tar.gz
+	tar xzf ncurses-${ncurver}.tar.gz
+	mkdir -p ncurses-build && cd ncurses-build
+	../ncurses-${ncurver}/configure --prefix="${PREFIX}" --with-shared --with-profile
+	make -j$(nproc)
+	make install
+}
+
+function build_texinfo()
+{
+	wget http://ftp.gnu.org/gnu/texinfo/texinfo-${texinfover}.tar.gz
+	tar -xzf texinfo-${texinfover}.tar.gz
+	mkdir -p texinfo-build && cd texinfo-build
+	../texinfo-${texinfover}/configure --prefix="${PREFIX}"
+	make -j $(nproc)
+	make install
+}
+
+function build_binutils()
+{
+	echo "Building binutils"
+	wget https://ftp.gnu.org/gnu/binutils/binutils-${binutilsver}.tar.gz
+
+	echo "Extracting archive"
+	tar -xzf binutils-${binutilsver}.tar.gz
+
+	for _target in $_targets; do
+		echo "Building ${_target} cross binutils"
+		mkdir -p binutils-${_target} && cd "binutils-${_target}"
+		../binutils-${binutilsver}/configure --prefix=${PREFIX} \
+			--target=${_target} \
+			--infodir=${PREFIX}/share/info/${_target} \
+			--enable-lto --enable-plugins \
+			--enable-deterministic-archives \
+			--disable-multilib --disable-nls \
+			--disable-werror > configure.log
+					
+		make -j$(nproc)  ||  exit 1
+		make install  ||  exit 1
+		cd ..
+	done
+}
+
+function build_gcc_base()
+{
+	wget https://ftp.gnu.org/gnu/gcc/gcc-$pkgver/gcc-$pkgver.tar.gz
+	tar -xzf gcc-$pkgver.tar.gz
+
+	cd gcc-${pkgver}
+	./contrib/download_prerequisites
+	cd ..
+
+	for _target in ${_targets}; do
+		echo "Building ${_target} GCC C compiler"
+		mkdir -p gcc-build-${_target} && cd gcc-build-${_target}
+
+		echo "Running configure"
+		../gcc-${pkgver}/configure --prefix=${PREFIX} \
+			--target=${_target} \
+			--enable-languages=c,c++,lto \
+			--enable-static \
+			--with-system-zlib \
+			--enable-lto --disable-dw2-exceptions \
+			--disable-nls --enable-version-specific-runtime-libs \
+			--disable-multilib --enable-checking=release \
+			--disable-werror
+			
+		make -j$(nproc) all-gcc	  ||  exit 1
+		make install-gcc  ||  exit 1
+		cd ..
+	done
+}
+
+function build_gcc()
+{
+	for _target in ${_targets}; do
+		mkdir -p gcc-build-${_target} && cd gcc-build-${_target}
+
+		../gcc-${pkgver}/configure --prefix=${PREFIX} --libexecdir=${PREFIX}/lib \
+			--target=${_target} \
+			--enable-languages=c,lto,c++,objc,obj-c++,fortran,ada \
+			--enable-shared --enable-static \
+			--enable-threads=posix --enable-fully-dynamic-string --enable-libstdcxx-time=yes \
+			--with-system-zlib \
+			--enable-lto --disable-dw2-exceptions --enable-libgomp \
+			--disable-multilib --enable-checking=release
+		
+		make -j$(nproc)  ||  exit 1
+		make install  ||  exit 1
+		cd ..
+	done
+
+}
+
+function build_crt()
+{
+	for _target in ${_targets}; do
+		echo "Building ${_target} CRT"
+		if [ ${_target} == "i686-w64-mingw32" ]; then
+			_crt_configure_args="--disable-lib64 --enable-lib32"
+		elif [ ${_target} == "x86_64-w64-mingw32" ]; then
+			_crt_configure_args="--disable-lib32 --enable-lib64"
+		fi
+		mkdir -p crt-${_target} && cd crt-${_target}
+		../mingw-w64-v${mingwver}/mingw-w64-crt/configure --prefix=${PREFIX}/${_target} \
+			--host=${_target} --enable-wildcard \
+			${_crt_configure_args}
+
+		make -j$(nproc)  ||  exit 1
+		make install  ||  exit 1
+		cd ..
+	done
+}
+
+function copy_headers()
+{
+	wget https://sourceforge.net/projects/mingw-w64/files/mingw-w64/mingw-w64-release/mingw-w64-v${mingwver}.tar.gz
+	tar -xzf mingw-w64-v${mingwver}.tar.gz
+
+	for _target in ${_targets}; do
+		echo "Configuring ${_target} headers"
+		mkdir -p headers-${_target} && cd headers-${_target}
+		../mingw-w64-v${mingwver}/mingw-w64-headers/configure --prefix=${PREFIX}/${_target} --enable-sdk=all --enable-secure-api --host=${_target}
+		make install  ||  exit 1
+		cd ..
+	done
+}
+
+mkdir -p ${PREFIX}
+mkdir -p build-texinfo
+mkdir -p build-ncurses
+mkdir -p build-binutils
+mkdir -p build-mingw
+mkdir -p build-gcc
+
+(cd build-ncurses && build_ncurses) || exit 1
+(cd build-texinfo && build_texinfo) || exit 1
+(cd build-binutils && build_binutils) || exit 1
+(cd build-mingw && copy_headers) || exit 1
+(cd build-gcc && build_gcc_base) || exit 1 
+(cd build-mingw && build_crt) || exit 1
+(cd build-gcc && build_gcc) || exit 1

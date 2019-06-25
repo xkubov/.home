@@ -1,0 +1,19 @@
+#!/bin/bash
+
+test -z ${1} && echo "Provide file to steal" >&2 && exit 1
+test -z ${2} && echo "Provide new name for stolen file" >&2 && exit 2
+
+OUT=`open $1 true`
+if [ $? -ne 0 ]; then
+	echo "Unable to find file ${1} for stealing" >&2
+	exit 1
+fi
+
+eval $OUT
+# Now header is in var $HEADER and file in var $FILE
+
+test ! -z "$HEADER" && NEW_HEADER=`echo "$HEADER" | sed "s/\/[^/]*\.h$/\/${2}.h/"`
+test ! -z "$FILE" && NEW_FILE=`echo "$FILE" | sed "s/\/[^/]*\.cpp$/\/${2}.cpp/"`
+
+test ! -z "$FILE" && cp $FILE $NEW_FILE
+test ! -z "$HEADER" && cp $HEADER $NEW_HEADER
