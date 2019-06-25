@@ -1,7 +1,15 @@
 Host merlin
-	HostName merlin.fit.vutbr.cz
+	Hostname merlin.fit.vutbr.cz
 	User xkubov06
 
 Host eva
-	HostName eva.fit.vutbr.cz
+	Hostname eva.fit.vutbr.cz
 	User xkubov06
+
+Host r3
+	Hostname retdec03.cz.avg.com
+	User kubov
+
+Host retdecdb
+	Hostname retdecdb.cz.avg.com
+	User kubov
