@@ -43,6 +43,9 @@
 	cm = commit -m
 	cv = commit -v
 
+	# check
+	ckw = !git diff-tree --check $(git hash-object -t tree /dev/null) HEAD
+
 	# checkout shortcuts
 	ch  = checkout
 	chb = checkout -b
