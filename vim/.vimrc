@@ -32,7 +32,7 @@ set t_Co=256
 
 "colorscheme happy_hacking
 "colorscheme space_vim_theme
-colorscheme deus 
+"colorscheme deus
 
 " This is important as nvim will not turn check spell
 set nospell 
@@ -88,3 +88,7 @@ let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
+
+let g:lightline = {
+      \ 'colorscheme': 'jellybeans',
+      \ }
