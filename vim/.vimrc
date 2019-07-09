@@ -39,7 +39,6 @@ set nospell
 nnoremap <leader>s :set invspell spelllang=sk<CR>
 nnoremap <leader>e :set invspell spelllang=en_us<CR>
 nnoremap <leader>m :!(make \|\| build)<CR>
-nnoremap <leader>c :!make normostrany<CR>
 
 set ruler
 set hlsearch
