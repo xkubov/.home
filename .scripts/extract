@@ -1,8 +1,15 @@
 #!/bin/bash
 
+# TODO:
+#  - complete rewrite
+
 test -z ${1} && echo "Provide path to the file" >&2 && exit 1
 
-EXTENSION=`echo ${1} | sed -E 's/[^/]*\.([^/]*)$/\1/'`
+SUPPORTED="zip tar.gz tar gz"
+
+SUP_EXP="\($(echo $SUPPORTED | tr ' ' '|')\)"
+
+EXTENSION=`echo ${1} | sed -E "s/.*\.(${SUP_EXP})$/\1/"`
 
 if [ $EXTENSION == "zip" ]; then
 	unzip ${1}
