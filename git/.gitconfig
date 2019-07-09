@@ -24,7 +24,9 @@
 	log = true
 
 [alias]
+	# Helper function
 	check-arg = !test -z "$1" && ( echo "Provide name of branch" && exit 1) || exit 0 && true
+
 	# add shortcuts
 	a = add
 	ac = !git add $(git ls-files -m | uniq)
@@ -44,8 +46,9 @@
 	cm = commit -m
 	cv = commit -v
 
-	# check
-	ckw = !git diff-tree --check $(git hash-object -t tree /dev/null) HEAD
+	# clone
+	ce = clone
+	cer = clone --recursive
 
 	# checkout shortcuts
 	ch  = checkout
@@ -58,10 +61,17 @@
 	chmy-all = !git chmy $(git ls-files -m | uniq)
 	chthy-all = !git chthy $(git ls-files -m | uniq)
 
-	cl = clone
+	# clean
+	cl = clean
+	clf = clean -f
+	cli = clean -i
 
 	# cherry-pick
 	cp = cherry-pick
+	cpa = check-pick --abort
+
+	# check
+	ckw = !git diff-tree --check $(git hash-object -t tree /dev/null) HEAD
 
 	# fetch
 	f = fetch
@@ -105,13 +115,11 @@
 	s = status
 
 	sh = show
-
 	# lists deleted files in repository
 	shd = !git ls-files -d
-
 	# lists new files in repository
 	shn = !git ls-files -o --exclude-standard --full-name
-
+	# lists modified files in repository
 	shm = !git ls-files -m
 
 	st = stash
