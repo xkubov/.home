@@ -1,6 +1,8 @@
 ##
 ## Installation Makefile
 ##
+## WARNING: This Makefile is only in its initail <<lame>> version.
+##
 
 PROJECT=$(PWD)
 BASHDIR=$(PROJECT)/bash
