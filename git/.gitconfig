@@ -30,8 +30,8 @@
 	# add shortcuts
 	a = add
 	ac = !git add $(git ls-files -m | uniq)
-	ad = !git add $(git shd)
-	an = !git add $(git shn)
+	ad = !git add $(git shd) # add deleted
+	an = !git add $(git shn) # add new
 	ap = add -p
 
 	# branch shortcuts
