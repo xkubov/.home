@@ -6,11 +6,10 @@ PROJECT=$(PWD)
 BASHDIR=$(PROJECT)/bash
 VIMDIR=$(PROJECT)/vim
 GITDIR=$(PROJECT)/git
-TMUXDIR=$(PROJECT)/tmux
 
 SAVE="$(HOME)/old_env_save"
 
-all: core tmuxc scripts
+all: core scripts
 
 core: bashc vimc fzfc gitc sshc
 
@@ -68,21 +67,6 @@ gitc:
 	@test ! -L $(O1) || rm -rf $(O1)
 	
 	ln -s $(GITDIR)/.gitconfig $(O1)
-
-tmuxc:
-	$(eval O1=$(HOME)/.tmux.conf)
-	$(eval O2=$(HOME)/.inputrc)
-	$(eval O3=$(HOME)/.tmux-themepack)
-	@test ! -e $(O1) || rm -rf $(O1)
-	@test ! -L $(O1) || rm -rf $(O1)
-	@test ! -e $(O2) || rm -rf $(O2)
-	@test ! -L $(O2) || rm -rf $(O2)
-	@test ! -e $(O3) || rm -rf $(O3)
-	@test ! -L $(O3) || rm -rf $(O3)
-
-	ln -s $(TMUXDIR)/.tmux.conf $(O1)
-	ln -s $(TMUXDIR)/.inputrc $(O2)
-	ln -s $(TMUXDIR)/.tmux-themepack $(O3)
 
 will-save:
 	@test -f $(SAVE) && rm -rf $(SAVE) || true
