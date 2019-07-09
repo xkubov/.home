@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Set ls to colored output
+export CLICOLOR=1
+export LSCOLORS=ExFxBxDxCxegedabagacad

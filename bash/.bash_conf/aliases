@@ -1,16 +1,34 @@
 #!/bin/bash
 
-# Set ls to colored output
-export CLICOLOR=1
-export LSCOLORS=ExFxBxDxCxegedabagacad
-ls -GFh 1>/dev/null 2>/dev/null && alias ls='ls -GFh'
-ls --color=tty 1>/dev/null 2>/dev/null && alias ls='ls --color=tty'
-
-alias tmux="TERM=xterm-256color tmux"
-alias ll="ls -lha"
-alias sl="ls"
+# cd
 alias ..="cd .."
 
+# ls
+alias l="ls"
+alias ll="ls -lha"
+
+ls -GFh 1>/dev/null 2>/dev/null &&
+	alias ls='ls -GFh'
+
+ls --color=tty 1>/dev/null 2>/dev/null &&
+	alias ls='ls --color=tty'
+
+# git
 alias g="git"
+
+# open script
 alias o="open"
+
+# tmux
+alias tmux="TERM=xterm-256color tmux"
+
+# vim
 alias v="vim"
+alias vo="vim -O"
+alias vd="vimdiff"
+
+# Vagrant
+alias va="vagrant"
+alias vai="vagrant init"
+alias vau="vagrant up"
+alias vah="vagrant halt"

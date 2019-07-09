@@ -1,8 +1,9 @@
 #!/bin/bash
 
-source ${HOME}/.bash_conf/ps1
-source ${HOME}/.bash_conf/aliases
-source ${HOME}/.bash_conf/editors
+source ${HOME}/.bashrc_conf/ps1
+source ${HOME}/.bashrc_conf/aliases
+source ${HOME}/.bashrc_conf/colors
+source ${HOME}/.bashrc_conf/editors
 
 [ -f .bashrc_local ] && source .bashrc_local
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
