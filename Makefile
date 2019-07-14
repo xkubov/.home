@@ -90,6 +90,14 @@ brew:
 	brew install bash
 	brew install coreutils
 	brew install cmake
+	brew install lsd
+
+arch:
+	sudo pacman -S base-devel
+	sudo pacman -S nvim
+	sudo pacman -S cmake
+	sudo pacman -S git
+	sudo pacman -S lsd
 
 scripts:
 	ln -s $(PROJECT)/.scripts $(HOME)/.scripts
