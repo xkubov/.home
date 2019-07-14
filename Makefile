@@ -67,7 +67,6 @@ gitc:
 	$(eval O1=$(HOME)/.gitconfig)
 	@test ! -e $(O1) || rm -rf $(O1)
 	@test ! -L $(O1) || rm -rf $(O1)
-	
 	ln -s $(GITDIR)/.gitconfig $(O1)
 
 will-save:

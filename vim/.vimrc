@@ -35,7 +35,7 @@ set t_Co=256
 "colorscheme deus
 
 " This is important as nvim will not turn check spell
-set nospell 
+set nospell
 nnoremap <leader>s :set invspell spelllang=sk<CR>
 nnoremap <leader>e :set invspell spelllang=en_us<CR>
 nnoremap <leader>m :!(make \|\| build)<CR>

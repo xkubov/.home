@@ -43,6 +43,7 @@ alias vai="vagrant init"
 alias vau="vagrant up"
 alias vah="vagrant halt"
 
+
 alias python='python3'
 alias py=python
 alias pip='pip3'

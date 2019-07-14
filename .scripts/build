@@ -63,7 +63,7 @@ function get_build_dir()
 	fi
 
 	test -z "$to_create" && echo "build" && exit 0
-	
+
 	echo "build-$to_create"
 	exit 0
 }

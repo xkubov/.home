@@ -52,7 +52,7 @@ function build_binutils()
 			--enable-deterministic-archives \
 			--disable-multilib --disable-nls \
 			--disable-werror > configure.log
-					
+
 		make -j$(nproc)  ||  exit 1
 		make install  ||  exit 1
 		cd ..
@@ -82,7 +82,7 @@ function build_gcc_base()
 			--disable-nls --enable-version-specific-runtime-libs \
 			--disable-multilib --enable-checking=release \
 			--disable-werror
-			
+
 		make -j$(nproc) all-gcc	  ||  exit 1
 		make install-gcc  ||  exit 1
 		cd ..
@@ -102,7 +102,7 @@ function build_gcc()
 			--with-system-zlib \
 			--enable-lto --disable-dw2-exceptions --enable-libgomp \
 			--disable-multilib --enable-checking=release
-		
+
 		make -j$(nproc)  ||  exit 1
 		make install  ||  exit 1
 		cd ..
@@ -155,6 +155,6 @@ mkdir -p build-gcc
 (cd build-texinfo && build_texinfo) || exit 1
 (cd build-binutils && build_binutils) || exit 1
 (cd build-mingw && copy_headers) || exit 1
-(cd build-gcc && build_gcc_base) || exit 1 
+(cd build-gcc && build_gcc_base) || exit 1
 (cd build-mingw && build_crt) || exit 1
 (cd build-gcc && build_gcc) || exit 1

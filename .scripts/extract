@@ -17,6 +17,6 @@ elif [ $EXTENSION == "tar.gz" ]; then
 	tar -xzf ${1}
 elif [ $EXTENSION == "tar" ]; then
 	tar -xf ${1}
-elif [ $EXTENSION  == ".gz" ]; then	
+elif [ $EXTENSION  == ".gz" ]; then
 	gunzip ${1}
 fi
