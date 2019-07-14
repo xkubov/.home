@@ -6,3 +6,7 @@ different machines.
 
 This repository is not complete yet. It is
 just in its raw form yet.
+
+## TODO
+- configure python
+- install pynvim
