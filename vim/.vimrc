@@ -1,38 +1,38 @@
-"
-"TODO: Separate colors from commands
-"TODO: Separate vundle installations
-"
-
 set noautochdir
 set nocompatible
 
 filetype off
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
+Plugin 'roxma/vim-hug-neovim-rpc'
 Plugin 'VundleVim/Vundle.vim'
+Plugin 'tpope/vim-surround'
 Plugin 'tpope/vim-fugitive'
 Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
-Plugin 'itchyny/lightline.vim'
-Plugin 'YorickPeterse/happy_hacking.vim'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 Plugin 'duythinht/vim-coffee'
 Plugin 'scrooloose/nerdtree'
 Plugin 'tpope/vim-eunuch'
 Plugin 'w0rp/ale'
 Plugin 'mattn/emmet-vim'
 Plugin 'airblade/vim-gitgutter'
-Plugin 'liuchengxu/space-vim-theme'
 Plugin 'junegunn/fzf.vim'
+Plugin 'Shougo/deoplete.nvim'
+Plugin 'SirVer/ultisnips'
+Plugin 'honza/vim-snippets'
+Plugin 'jiangmiao/auto-pairs'
+" Themes
+Plugin 'YorickPeterse/happy_hacking.vim'
+Plugin 'liuchengxu/space-vim-theme'
 Plugin 'ajmwagar/vim-deus'
+Plugin 'morhetz/gruvbox'
 call vundle#end()
 filetype plugin indent on
 
 set nu
 syntax on
 set t_Co=256
-
-"colorscheme happy_hacking
-"colorscheme space_vim_theme
-"colorscheme deus
 
 " This is important as nvim will not turn check spell
 set nospell
@@ -75,10 +75,6 @@ nnoremap td  :tabclose<CR>
 let g:NERDTreeNodeDelimiter = "\u00a0"
 let g:gitgutter_max_signs=9999
 
-if !empty(glob('~/.vimrc_local'))
-	so ~/.vimrc_local
-endif
-
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
@@ -88,6 +84,20 @@ let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 
-let g:lightline = {
-      \ 'colorscheme': 'jellybeans',
-      \ }
+let g:deoplete#enable_at_startup = 1
+
+"colorscheme gruvbox
+
+let g:airline_theme='bubblegum'
+
+let g:ale_warn_about_trailing_whitespace = 1
+
+if !empty(glob('~/.vimrc_local'))
+	so ~/.vimrc_local
+endif
+
+" Shortcuts for vim templates
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+let g:UltiSnipsEditSplit="vertical"
