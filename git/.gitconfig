@@ -40,6 +40,9 @@
 	br = branch -r
 	ba = branch -a
 
+	# blame them
+	bl = !git blame `fzf`
+
 	# commit shortcuts
 	c = commit
 	ca = commit --amend
