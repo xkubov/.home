@@ -4,14 +4,24 @@
 alias ..="cd .."
 
 # ls
+
+which lsd &>/dev/null
+if [ "$?" -eq 0 ]; then
+	alias ls=lsd
+else
+	ls -GFh &>/dev/null &&
+		alias ls='ls -GFh'
+
+	ls --color=tty &>/dev/null &&
+		alias ls='ls --color=tty'
+fi
+
 alias l="ls"
-alias ll="ls -lha"
-
-ls -GFh 1>/dev/null 2>/dev/null &&
-	alias ls='ls -GFh'
-
-ls --color=tty 1>/dev/null 2>/dev/null &&
-	alias ls='ls --color=tty'
+alias la="ls -A"
+alias lA="ls -a"
+alias ll="ls -lhA"
+alias lsa="ls -A"
+alias lsA="ls -a"
 
 # git
 alias g="git"
@@ -32,3 +42,7 @@ alias va="vagrant"
 alias vai="vagrant init"
 alias vau="vagrant up"
 alias vah="vagrant halt"
+
+alias python='python3'
+alias py=python
+alias pip='pip3'
