@@ -43,7 +43,6 @@ nnoremap <leader>m :!(make \|\| build)<CR>
 set ruler
 set hlsearch
 set autoindent
-set relativenumber
 set wildmode=longest,list
 set number
 set mouse=v
