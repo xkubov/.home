@@ -50,8 +50,8 @@
 	cv = commit -v
 
 	# clone
-	ce = clone
-	cer = clone --recursive
+	cl = clone
+	clr = clone --recursive
 
 	# checkout shortcuts
 	ch  = checkout
@@ -65,9 +65,9 @@
 	chthy-all = !git chthy $(git ls-files -m | uniq)
 
 	# clean
-	cl = clean
-	clf = clean -f
-	cli = clean -i
+	cn = clean
+	cnf = clean -f
+	cni = clean -i
 
 	# cherry-pick
 	cp = cherry-pick
@@ -79,6 +79,7 @@
 	# fetch
 	f = fetch
 	fu = fetch upstream
+	fd = fetch devel
 
 	# shows a nice tree of the whole repository
 	l = log
@@ -91,8 +92,10 @@
 
 	# push
 	p = push
+	pd = push devel
 	po = push origin
-	pm = push origin master
+	pu = push upstream
+	pom = push origin master
 
 	# rebase shortcuts
 	r  = rebase
@@ -103,6 +106,17 @@
 	ru = rebase upstream/master
 	rim = rebase -i master
 	riu = rebase -i upstream/master
+
+	# remote
+	re = remote
+	rea = remote add
+	read = remote add devel
+	ream = remote add master
+	reau = remote add upstream
+	rer = remote remove
+	rerd = remote remove devel
+	rerm = remote remove master
+	reru = remote remove upstream
 
 	# reset shortcuts
 	rst = reset
