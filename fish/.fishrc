@@ -1,0 +1,16 @@
+#!/usr/bin/env fish
+
+source $HOME/.config/fish/.fish_conf/aliases
+source $HOME/.config/fish/.fish_conf/colors
+source $HOME/.config/fish/.fish_conf/editors
+source $HOME/.config/fish/.fishrc_local
+
+#[ -f .fishrc_local ] && source .fishrc_local
+#[ -f ~/.fzf.fish ] && source ~/.fzf.fish
+
+set -x PATH $HOME/.scripts $HOME/install/bin $PATH
+
+set -x LC_ALL en_US.UTF-8
+set -x LANG en_US.UTF-8
+
+set -x PATH $PATH /Users/kubov/.fzf/bin
