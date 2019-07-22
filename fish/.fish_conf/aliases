@@ -1,18 +1,16 @@
 #!/usr/bin/env fish
 
+alias b='build'
+alias bp='build -p'
+alias bd='build -d'
+alias bdp='build -d -p'
+
+# git
+alias g="git"
+alias gi="git init && git aa && git ci"
+
 # ls
-
-#which lsd &>/dev/null
-#if test $status -eq 0 ]; then
-#	alias ls=lsd
-#else
-#	ls -GFh &>/dev/null &&
-#		alias ls='ls -GFh'
-#
-#	ls --color=tty &>/dev/null &&
-#		alias ls='ls --color=tty'
-#fi
-
+# TODO: pls, check lsd, pls
 alias ls="lsd"
 alias l="ls"
 alias la="ls -A"
@@ -21,14 +19,15 @@ alias ll="ls -lhA"
 alias lsa="ls -A"
 alias lsA="ls -a"
 
-# git
-alias g="git"
-
 # open script
 alias o="open"
+alias oc="vim $HOME/.config/fish/config.fish"
+alias og="vim $HOME/.gitconfig"
 
 # tmux
 set -x TERM "xterm-256color"
+alias t="tmux"
+alias tmx="tmux"
 
 # vim
 alias v="vim"
