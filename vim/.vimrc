@@ -85,8 +85,6 @@ let g:syntastic_check_on_wq = 0
 
 let g:deoplete#enable_at_startup = 1
 
-"colorscheme gruvbox
-
 let g:airline_theme='bubblegum'
 
 let g:ale_warn_about_trailing_whitespace = 1
@@ -100,3 +98,8 @@ let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 let g:UltiSnipsEditSplit="vertical"
+let t:is_transparent = 0
+
+colorscheme gruvbox
+hi Normal ctermbg=none
+let t:is_tranparent = 1
