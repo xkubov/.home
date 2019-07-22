@@ -29,6 +29,7 @@
 
 	# add shortcuts
 	a = add
+	aa = add -A
 	ac = !git add $(git ls-files -m | uniq)
 	ad = !git add $(git shd) # add deleted
 	an = !git add $(git shn) # add new
@@ -46,6 +47,7 @@
 	# commit shortcuts
 	c = commit
 	ca = commit --amend
+	ci = commit -m 'Initial commit'
 	cm = commit -m
 	cv = commit -v
 
@@ -81,6 +83,9 @@
 	fu = fetch upstream
 	fd = fetch devel
 
+	# init
+	i = init
+
 	# shows a nice tree of the whole repository
 	l = log
 	ln = log --oneline --decorate --all --graph
@@ -104,18 +109,20 @@
 	ri = rebase -i
 	rm = rebase master
 	ru = rebase upstream/master
+	rom = rebase origin/master
 	rim = rebase -i master
-	riu = rebase -i upstream/master
+	riom = rebase -i origin/master
+	rium = rebase -i upstream/master
 
 	# remote
 	re = remote
 	rea = remote add
 	read = remote add devel
-	ream = remote add master
 	reau = remote add upstream
+	reao = remote add origin
 	rer = remote remove
 	rerd = remote remove devel
-	rerm = remote remove master
+	rero = remote remove origin
 	reru = remote remove upstream
 
 	# reset shortcuts
@@ -142,3 +149,4 @@
 	st = stash
 	stp = stash pop
 	std = stash drop
+	stc = !git stash && git stash drop
