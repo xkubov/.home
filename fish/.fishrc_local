@@ -5,5 +5,4 @@
 # as local-machine customizable bash setting.
 #
 
-BASH_COMPL="/usr/local/etc/profile.d/bash_completion.sh"
-[ -f ${BASH_COMPL} ] && source ${BASH_COMPL}
+set -x PATH $HOME/.cargo/bin $PATH
