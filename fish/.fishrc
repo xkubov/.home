@@ -27,3 +27,5 @@ set -g theme_title_display_process yes
 set -g theme_display_hg yes
 set -g theme_display_vagrant yes
 set -x VIRTUAL_ENV_DISABLE_PROMPT yes
+# set -g fish_user_paths "/usr/local/opt/llvm/bin" $fish_user_paths
+set -g fish_user_paths "/usr/local/opt/llvm@3.9/bin" $fish_user_paths

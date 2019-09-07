@@ -1,18 +1,22 @@
 #!/usr/bin/env fish
 
-alias b='build'
-alias bp='build -p'
-alias bd='build -d'
-alias bdp='build -d -p'
+abbr b 'build'
+abbr bp 'build -p'
+abbr bd 'build -d'
+abbr bdp 'build -d -p'
 
 # git
-alias g="git"
-alias gi="git init && git aa && git ci"
+abbr g "git"
+alias gi "git init && git aa && git ci"
+
+# mkdir
+abbr md "mkdir"
 
 # ls
 # TODO: pls, check lsd, pls
 alias ls="lsd"
-alias l="ls"
+
+abbr l "ls"
 alias la="ls -A"
 alias lA="ls -a"
 alias ll="ls -lhA"
@@ -20,9 +24,9 @@ alias lsa="ls -A"
 alias lsA="ls -a"
 
 # open script
-alias o="open"
-alias oc="vim $HOME/.config/fish/config.fish"
-alias og="vim $HOME/.gitconfig"
+abbr o "open"
+abbr oc "vim $HOME/.config/fish/config.fish"
+abbr og "vim $HOME/.gitconfig"
 
 # tmux
 set -x TERM "xterm-256color"
@@ -30,15 +34,15 @@ alias t="tmux"
 alias tmx="tmux"
 
 # vim
-alias v="vim"
-alias vo="vim -O"
-alias vd="vimdiff"
+abbr v "vim"
+abbr vo "vim -O"
+abbr vd "vimdiff"
 
 # Vagrant
-alias va="vagrant"
-alias vai="vagrant init"
-alias vau="vagrant up"
-alias vah="vagrant halt"
+abbr va "vagrant"
+abbr vai "vagrant init"
+abbr vau "vagrant up"
+abbr vah "vagrant halt"
 
 alias nosetests="python3 -m nose"
 
