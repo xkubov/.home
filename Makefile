@@ -101,6 +101,10 @@ arch:
 scripts:
 	ln -s $(PROJECT)/.scripts $(HOME)/.scripts
 
+pip:
+	python3 -m install neovim
+	python3 -m install pyvim
+
 .PHONY:
 help:
 	@echo "Home installation Makefile."
