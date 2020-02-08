@@ -1,6 +1,8 @@
 set noautochdir
 set nocompatible
 
+set encoding=utf-8
+
 filetype off
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
@@ -17,6 +19,7 @@ Plugin 'w0rp/ale'
 Plugin 'mattn/emmet-vim'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'junegunn/fzf.vim'
+Plugin 'jceb/vim-orgmode'
 "Plugin 'Shougo/deoplete.nvim'
 Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
@@ -100,6 +103,6 @@ let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 let g:UltiSnipsEditSplit="vertical"
 let t:is_transparent = 0
 
-colorscheme gruvbox
-hi Normal ctermbg=none
-let t:is_tranparent = 1
+"colorscheme gruvbox
+"hi Normal ctermbg=none
+"let t:is_tranparent = 1

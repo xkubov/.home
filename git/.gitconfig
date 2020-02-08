@@ -1,5 +1,5 @@
 [core]
-	editor = nvim
+	editor = vim
 
 [user]
 	name = Peter Kubov
@@ -149,4 +149,6 @@
 	st = stash
 	stp = stash pop
 	std = stash drop
-	stc = !git stash && git stash drop
+	stc = stash clear
+	stsd = !git st && git std
+	stsc = !git st && git stc

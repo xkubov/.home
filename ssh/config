@@ -13,3 +13,6 @@ Host r3
 Host retdecdb
 	Hostname retdecdb.cz.avg.com
 	User kubov
+
+Host github
+	IdentityFile ~/.ssh/id_secure
