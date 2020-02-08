@@ -1,0 +1,14 @@
+image=~/Pictures/Locs/nmh.png
+color=0000001c
+ring-color=0000003e
+line-color=00000000
+key-hl-color=ffffff80
+ring-ver-color=ffffff00
+separator-color=22222260
+inside-ver-color=ffffff1c
+ring-wrong-color=ffffff55
+inside-wrong-color=ffffff1c
+text-ver-color=ffffff00
+text-wrong-color=ff000000
+layout-bg-color=ffffff00
+indicator-radius=80
