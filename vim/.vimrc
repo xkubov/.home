@@ -20,10 +20,7 @@ Plugin 'mattn/emmet-vim'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'junegunn/fzf.vim'
 Plugin 'jceb/vim-orgmode'
-"Plugin 'Shougo/deoplete.nvim'
-Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
-Plugin 'jiangmiao/auto-pairs'
 Plugin 'ycm-core/YouCompleteMe'
 " Themes
 Plugin 'YorickPeterse/happy_hacking.vim'
@@ -103,6 +100,8 @@ let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 let g:UltiSnipsEditSplit="vertical"
 let t:is_transparent = 0
 
-"colorscheme gruvbox
+let g:ycm_rust_src_path = '/Users/kubov/projects/rustc/src'
+let g:rust_src_path = '/Users/kubov/projects/rustc/src'
+
 "hi Normal ctermbg=none
 "let t:is_tranparent = 1
