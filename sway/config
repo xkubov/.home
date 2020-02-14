@@ -27,6 +27,4 @@ include mouse.config
 include keyboard.config
 include behav.config
 
-include /etc/sway/config.d/*
-
 exec_always ~/.config/waybar/waybar.sh
