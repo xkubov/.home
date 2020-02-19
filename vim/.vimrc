@@ -99,10 +99,10 @@ let g:ale_cpp_ccls_init_options = {
 \   }
 \ }
 
-nn <silent> <M-d> :ALEGoToDefinition<cr>
-nn <silent> <M-r> :ALEFindReferences<cr>
-nn <silent> <M-a> :ALESymbolSearch<cr>
-nn <silent> <M-h> :ALEHover<cr>
+nnoremap <leader>d :ALEGoToDefinition<cr>
+nnoremap <leader>r :ALEFindReferences<cr>
+nnoremap <leader>a :ALESymbolSearch<cr>
+nnoremap <leader>h :ALEHover<cr>
 
 if !empty(glob('~/.vimrc_local'))
 	so ~/.vimrc_local
