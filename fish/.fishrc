@@ -29,3 +29,7 @@ set -g theme_display_vagrant yes
 set -x VIRTUAL_ENV_DISABLE_PROMPT yes
 # set -g fish_user_paths "/usr/local/opt/llvm/bin" $fish_user_paths
 set -g fish_user_paths "/usr/local/opt/llvm@3.9/bin" $fish_user_paths
+
+set -x LD_LIBRARY_PATH $HOME/install/lib/
+set -x CXX /opt/gcc-8/bin/g++
+set -x CC /opt/gcc-8/bin/gcc

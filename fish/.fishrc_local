@@ -1,8 +1,30 @@
-#!/bin/bash
-
 #
 # This is template .bashrc_local. It was ment to be used
 # as local-machine customizable bash setting.
 #
 
-set -x PATH $HOME/.cargo/bin $PATH
+set -x PATH "$HOME/.cargo/bin" "$PATH"
+
+set -x CPATH	/home/kubov/projects/retdec/src								\
+		/home/kubov/projects/retdec/include							\
+		/home/kubov/projects/retdec/tests							\
+		/home/kubov/projects/retdec/deps/variant/include					\
+		/home/kubov/projects/retdec/build/master/external/src/libdwarf-project/libdwarf		\
+		/home/kubov/projects/retdec/build/master/external/src/libdwarf-project/libelf		\
+		/home/kubov/projects/retdec/build/master/external/src/libdwarf-project/			\
+		/home/kubov/projects/retdec/build/master/external/src/llvm-project/include		\
+		/home/kubov/projects/retdec/build/master/external/src/llvm-project-build/include	\
+		/home/kubov/projects/retdec/build/master/external/src/capstone-project/include		\
+		/home/kubov/projects/retdec/build/master/external/src/elfio-project/include/		\
+		/home/kubov/projects/retdec/build/master/external/src/keystone-project/include		\
+		/home/kubov/projects/retdec/build/master/external/src/jsoncpp-project/include		\
+		/home/kubov/projects/retdec/build/master/external/src/pelib-project/include		\
+		/home/kubov/projects/retdec/build/master/external/src/yaramod-project/include		\
+		/home/kubov/projects/retdec/build/master/external/src/rapidjson-project/include		\
+		/usr/local/opt/openssl/include								\
+		/home/kubov/projects/retdec/build/master/external/src/googletest/googletest/include	\
+		/home/kubov/projects/radare2/libr/include
+
+alias rdgcc /decompiler-tests/compilers/gcc-llvm-x86-elf/bin/i686-pc-linux-gnu-gcc
+
+set -x TODAY (today)

@@ -6,12 +6,16 @@ source $HOME/.config/fish/.fishrc_local
 #[ -f .fishrc_local  ] && source .fishrc_local    
 #[ -f ~/.fzf.fish  ] && source ~/.fzf.fish    
 
+set -x PATH /opt/python-3.7/bin/ ~/.local/bin $PATH
+
 [ -f ~/.fzf/shell/key-bindings.fish ] && . ~/.fzf/shell/key-bindings.fish
 
 set -x PATH $HOME/install/bin $HOME/.scripts $PATH    
 
 set -x LC_ALL en_US.UTF-8    
 set -x LANG en_US.UTF-8    
+
+set fish_greeting
 
 set -x PATH $PATH /Users/kubov/.fzf/bin    
 set -g theme_nerd_fonts yes    
@@ -27,3 +31,7 @@ set -g theme_title_display_process yes
 set -g theme_display_hg yes    
 set -g theme_display_vagrant yes    
 set -x VIRTUAL_ENV_DISABLE_PROMPT yes
+
+set -x LD_LIBRARY_PATH $HOME/install/lib/
+set -x CXX /opt/gcc-8/bin/g++
+set -x CC /opt/gcc-8/bin/gcc
