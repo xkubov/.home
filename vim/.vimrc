@@ -6,7 +6,6 @@ set encoding=utf-8
 filetype off
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
-Plugin 'roxma/vim-hug-neovim-rpc'
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'tpope/vim-surround'
 Plugin 'tpope/vim-fugitive'
@@ -15,13 +14,16 @@ Plugin 'vim-airline/vim-airline-themes'
 Plugin 'duythinht/vim-coffee'
 Plugin 'scrooloose/nerdtree'
 Plugin 'tpope/vim-eunuch'
+Plugin 'Shougo/deoplete.nvim'
+Plugin 'roxma/nvim-yarp'
+Plugin 'roxma/vim-hug-neovim-rpc'
 Plugin 'w0rp/ale'
 Plugin 'mattn/emmet-vim'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'junegunn/fzf.vim'
 Plugin 'jceb/vim-orgmode'
 Plugin 'honza/vim-snippets'
-Plugin 'ycm-core/YouCompleteMe'
+Plugin 'MaskRay/ccls'
 " Themes
 Plugin 'YorickPeterse/happy_hacking.vim'
 Plugin 'liuchengxu/space-vim-theme'
@@ -90,6 +92,17 @@ let g:deoplete#enable_at_startup = 1
 let g:airline_theme='bubblegum'
 
 let g:ale_warn_about_trailing_whitespace = 1
+let g:ale_completion_enabled = 1
+let g:ale_cpp_ccls_init_options = {
+\   'cache': {
+\       'directory': '/tmp/ccls/cache'
+\   }
+\ }
+
+nn <silent> <M-d> :ALEGoToDefinition<cr>
+nn <silent> <M-r> :ALEFindReferences<cr>
+nn <silent> <M-a> :ALESymbolSearch<cr>
+nn <silent> <M-h> :ALEHover<cr>
 
 if !empty(glob('~/.vimrc_local'))
 	so ~/.vimrc_local
