@@ -16,6 +16,7 @@
 
 [diff]
 	renames = copies
+	tool = vimdiff
 
 [merge]
 	tool = vimdiff
@@ -88,7 +89,9 @@
 
 	# shows a nice tree of the whole repository
 	l = log
-	ln = log --oneline --decorate --all --graph
+	lp = log -p
+	ln = log --oneline --decorate --graph
+	lna = log --oneline --decorate --all --graph
 
 	# merge shortcut
 	m = merge

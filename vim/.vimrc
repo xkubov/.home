@@ -27,11 +27,13 @@ Plugin 'YorickPeterse/happy_hacking.vim'
 Plugin 'liuchengxu/space-vim-theme'
 Plugin 'ajmwagar/vim-deus'
 Plugin 'morhetz/gruvbox'
+Plugin 'dag/vim-fish'
 call vundle#end()
 filetype plugin indent on
 
 set nu
 syntax on
+filetype plugin indent on
 set t_Co=256
 
 " This is important as nvim will not turn check spell
