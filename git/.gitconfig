@@ -91,7 +91,9 @@
 	l = log
 	lp = log -p
 	ln = log --oneline --decorate --graph
+	lnp = ln -p
 	lna = log --oneline --decorate --all --graph
+	lnap = lna -p
 
 	# merge shortcut
 	m = merge
