@@ -37,7 +37,7 @@
 	ad = !git add $(git shd) # add deleted
 	an = !git add $(git shn) # add new
 	ap = add -p
-	api = ! git ap $(git shm | fzf -m -1 --preview='git diff {}')
+	api = ! git ap $(git shm | fzf -m -1 --preview='git diff {}' --preview-window=up:60%)
 
 	# branch shortcuts
 	b = branch
