@@ -35,6 +35,7 @@
 	ad = !git add $(git shd) # add deleted
 	an = !git add $(git shn) # add new
 	ap = add -p
+	api = ! git ap $(git shm | fzf -m -1)
 
 	# branch shortcuts
 	b = branch
