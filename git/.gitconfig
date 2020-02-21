@@ -46,7 +46,7 @@
 	b = branch
 	ba = branch -a
 	bd = branch -D
-	bf = ba --format='%(refname:short)'
+	bf = b --format='%(refname:short)'
 	br = branch -r
 
 	# blame them
@@ -69,7 +69,7 @@
 	# checkout shortcuts
 	ch  = checkout
 	chb = checkout -b
-	chi = !git ch $(git bf | fzf -m --preview-window=up:80% --ansi --preview='git lnd {}')
+	chi = !git ch $(git bf $@ | fzf -m --preview-window=up:80% --ansi --preview='git lnd {}') && true
 	chic = !git ch $(git log --oneline --decorate | fzf --preview='git lnshow {}' --preview-window=up:60% --ansi | xargs git lnparse)
 	chm = checkout master
 	chmp = !git checkout master && git pull
