@@ -11,8 +11,8 @@ SETUVAR _fish_abbr_g:git
 SETUVAR _fish_abbr_l:ls
 SETUVAR _fish_abbr_md:mkdir
 SETUVAR _fish_abbr_o:open
-SETUVAR _fish_abbr_oc:vim\x20/home/kubov//\x2econfig/fish/config\x2efish
-SETUVAR _fish_abbr_og:vim\x20/home/kubov//\x2egitconfig
+SETUVAR _fish_abbr_oc:vim\x20/home/kubov/\x2econfig/fish/config\x2efish
+SETUVAR _fish_abbr_og:vim\x20/home/kubov/\x2egitconfig
 SETUVAR _fish_abbr_rd:retdec\x2ddecompiler\x2epy
 SETUVAR _fish_abbr_t:tmux
 SETUVAR _fish_abbr_ta:tmux\x20a
