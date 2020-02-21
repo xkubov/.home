@@ -6,7 +6,9 @@
 	email = peter.kubov@avast.com
 
 [color]
-	ui = true
+	ui = always
+	branch = always
+	status = always
 
 [grep]
 	linenumber = true
@@ -35,13 +37,14 @@
 	ad = !git add $(git shd) # add deleted
 	an = !git add $(git shn) # add new
 	ap = add -p
-	api = ! git ap $(git shm | fzf -m -1)
+	api = ! git ap $(git shm | fzf -m -1 --preview='git diff {}')
 
 	# branch shortcuts
 	b = branch
-	bd = branch -D
-	br = branch -r
 	ba = branch -a
+	bd = branch -D
+	bf = branch --format='%(refname:short)'
+	br = branch -r
 
 	# blame them
 	bl = !git blame `fzf`
@@ -57,9 +60,14 @@
 	cl = clone
 	clr = clone --recursive
 
+	lnparse = !echo "$1" | sed -E 's/^([0-9a-f]+) .*/\\1/' && true
+	lnshow = !echo "$1" | xargs git lnparse | xargs git show && true
+
 	# checkout shortcuts
 	ch  = checkout
 	chb = checkout -b
+	chi = !git ch $(git bf | fzf -m --preview='git show {}')
+	chic = !git ch $(git log --oneline | fzf -m --preview='git lnshow {}' --preview-window=up --ansi)
 	chm = checkout master
 	chmp = !git checkout master && git pull
 	chrm = !git check-arg $1 && git ch "$1" && git r master
@@ -137,9 +145,6 @@
 
 	# removes new files in repository
 	rmn = !git shn | xargs rm
-
-	# reset shortcut
-	rst = reset
 
 	# status shortcuts
 	s = status
