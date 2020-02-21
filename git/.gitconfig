@@ -20,6 +20,9 @@
 	renames = copies
 	tool = vimdiff
 
+[log]
+	date = relative
+
 [merge]
 	tool = vimdiff
 	stat = true
@@ -43,7 +46,7 @@
 	b = branch
 	ba = branch -a
 	bd = branch -D
-	bf = branch --format='%(refname:short)'
+	bf = ba --format='%(refname:short)'
 	br = branch -r
 
 	# blame them
@@ -66,7 +69,7 @@
 	# checkout shortcuts
 	ch  = checkout
 	chb = checkout -b
-	chi = !git ch $(git bf | fzf -m --preview-window=up:60% --ansi --preview='git show {}')
+	chi = !git ch $(git bf | fzf -m --preview-window=up:80% --ansi --preview='git lnd {}')
 	chic = !git ch $(git log --oneline --decorate | fzf --preview='git lnshow {}' --preview-window=up:60% --ansi | xargs git lnparse)
 	chm = checkout master
 	chmp = !git checkout master && git pull
@@ -103,6 +106,7 @@
 	lnp = ln -p
 	lna = log --oneline --decorate --all --graph
 	lnap = lna -p
+	lnd = ln --pretty='format:%C(auto)%h %C(magenta)(%ar)%C(auto)%d %Creset%s'
 
 	# merge shortcut
 	m = merge
