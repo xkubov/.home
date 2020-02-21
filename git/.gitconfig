@@ -67,7 +67,7 @@
 	ch  = checkout
 	chb = checkout -b
 	chi = !git ch $(git bf | fzf -m --preview='git show {}')
-	chic = !git ch $(git log --oneline | fzf -m --preview='git lnshow {}' --preview-window=up --ansi | xargs git lnparse)
+	chic = !git ch $(git log --oneline | fzf --preview='git lnshow {}' --preview-window=up --ansi | xargs git lnparse)
 	chm = checkout master
 	chmp = !git checkout master && git pull
 	chrm = !git check-arg $1 && git ch "$1" && git r master
