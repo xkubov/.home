@@ -120,3 +120,7 @@ let g:rust_src_path = '/Users/kubov/projects/rustc/src'
 
 "hi Normal ctermbg=none
 "let t:is_tranparent = 1
+"
+
+autocmd Filetype python setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
+autocmd Filetype haskell setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
