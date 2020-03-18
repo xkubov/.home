@@ -36,11 +36,11 @@
 	# add shortcuts
 	a = add
 	aa = add -A
-	ac = !git add $(git ls-files -m | uniq)
-	ad = !git add $(git shd) # add deleted
-	an = !git add $(git shn) # add new
+	ac = !git add $(git lim | uniq)
+	ad = !git add $(git lid) # add deleted
+	an = !git add $(git lin) # add new
 	ap = add -p
-	api = ! git ap $(git shm | fzf -m -1 --preview='git diff {}' --preview-window=up:60%)
+	api = ! git ap $(git lim | fzf -m -1 --preview='git diff {}' --preview-window=up:60%)
 
 	# branch shortcuts
 	b = branch
@@ -154,12 +154,15 @@
 	s = status
 
 	sh = show
+
+	shm = !git diff-tree --no-commit-id --name-only -r $(test -z "$1" && echo HEAD || echo $1) && true
+
 	# lists deleted files in repository
-	shd = !git ls-files -d
+	lid = !git ls-files -d
 	# lists new files in repository
-	shn = !git ls-files -o --exclude-standard --full-name
+	lin = !git ls-files -o --exclude-standard --full-name
 	# lists modified files in repository
-	shm = !git ls-files -m
+	lim = !git ls-files -m
 
 	st = stash
 	stp = stash pop
