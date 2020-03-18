@@ -155,7 +155,11 @@
 
 	sh = show
 
-	shm = !git diff-tree --no-commit-id --name-only -r $(test -z "$1" && echo HEAD || echo $1) && true
+	# plumbing wat
+	# shm = !git diff-tree --no-commit-id --name-only -r $(test -z "$1" && echo HEAD || echo $1) && true
+
+	# porcelain way
+	shm = sh --name-only --oneline
 
 	# lists deleted files in repository
 	lid = !git ls-files -d
