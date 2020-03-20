@@ -27,6 +27,7 @@ Plugin 'MaskRay/ccls'
 " Themes
 Plugin 'YorickPeterse/happy_hacking.vim'
 Plugin 'liuchengxu/space-vim-theme'
+Plugin 'NLKNguyen/papercolor-theme'
 Plugin 'ajmwagar/vim-deus'
 Plugin 'morhetz/gruvbox'
 Plugin 'dag/vim-fish'
@@ -118,9 +119,30 @@ let t:is_transparent = 0
 let g:ycm_rust_src_path = '/Users/kubov/projects/rustc/src'
 let g:rust_src_path = '/Users/kubov/projects/rustc/src'
 
-"hi Normal ctermbg=none
-"let t:is_tranparent = 1
-"
+set t_Co=256   " This is may or may not needed.
+
+set background=dark
+set laststatus=2
+let g:PaperColor_Theme_Options = {
+  \   'theme': {
+  \     'default': {
+  \       'transparent_background': 1
+  \     }
+  \   },
+  \   'language': {
+  \     'python': {
+  \       'highlight_builtins' : 1
+  \     },
+  \     'cpp': {
+  \       'highlight_standard_library': 1
+  \     },
+  \     'c': {
+  \       'highlight_builtins' : 1
+  \     }
+  \   }
+  \ }
+
+colorscheme PaperColor
 
 autocmd Filetype python setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
 autocmd Filetype haskell setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
