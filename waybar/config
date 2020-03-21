@@ -38,7 +38,7 @@
         "format-alt": "{ipaddr}/{cidr} {icon}",
         "format-alt-click": "click-right",
         "format-icons": {
-            "wifi": ["睊", "直" ,""],
+            "wifi": ["直" ,""],
             "ethernet": [""],
             "disconnected": ["睊"]
         },

@@ -50,16 +50,28 @@ window#waybar.solo {
     min-width:  140px;
 }
 
+#battery {
+    color:      rgba(103, 128, 159, 1);
+}
+
 #battery.warning {
-   color:       rgba(255, 210, 4, 1);
+   color:       rgba(242, 217, 132, 1);
 }
 
 #battery.critical {
-    color:      rgba(238, 46, 36, 1);
+    color:      rgba(214, 69, 65, 1);
 }
 
 #battery.charging {
-    color:      rgba(217, 216, 216, 1);
+    color:      rgba(144, 198, 149, 1);
+}
+
+#network {
+   color:       rgba(162, 222, 208, 1);
+}
+
+#network.wifi {
+   color:       rgba(242, 217, 132, 1);
 }
 
 #custom-storage.warning {
