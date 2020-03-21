@@ -31,6 +31,7 @@ Plugin 'NLKNguyen/papercolor-theme'
 Plugin 'ajmwagar/vim-deus'
 Plugin 'morhetz/gruvbox'
 Plugin 'dag/vim-fish'
+Plugin 'junegunn/goyo.vim'
 call vundle#end()
 filetype plugin indent on
 
