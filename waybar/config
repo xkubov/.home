@@ -26,7 +26,7 @@
         "format-alt": "{time} {icon}",
 	"format-icons": ["", "", "", "", "", "", "", "", "", "", ""],
         "format-charging": "{capacity}% {icon}⚡",
-        "interval": 30,
+        "interval": 1,
         "states": {
             "warning": 25,
             "critical": 10
