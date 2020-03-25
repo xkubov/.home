@@ -5,7 +5,11 @@ source $HOME/.config/fish/config.local.fish
 
 [ -f ~/.fzf/shell/key-bindings.fish ] && . ~/.fzf/shell/key-bindings.fish
 
-set -x PATH $HOME/install/bin $HOME/.scripts $PATH    
+set -x PATH $HOME/.scripts $PATH
+
+set -x PATH $HOME/.local/bin $PATH
+set -x LD_LIBRARY_PATH $HOME/.local/lib $LD_LIBRARY_PATH
+set -x PKG_CONFIG_PATH $HOME/.local/lib/pkgconfig
 
 set -x LC_ALL en_US.UTF-8    
 set -x LANG en_US.UTF-8    
