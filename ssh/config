@@ -16,3 +16,7 @@ Host retdecdb
 
 Host github
 	IdentityFile ~/.ssh/id_secure
+
+Host anselm
+	Hostname anselm.it4i.cz
+	User dd-19-32-81
