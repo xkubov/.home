@@ -44,7 +44,7 @@ set t_Co=256
 set nospell
 nnoremap <leader>s :set invspell spelllang=sk<CR>
 nnoremap <leader>e :set invspell spelllang=en_us<CR>
-nnoremap <leader>m :!(make \|\| build)<CR>
+nnoremap <leader>m :!make<CR>
 
 set ruler
 set hlsearch
@@ -147,3 +147,4 @@ colorscheme PaperColor
 
 autocmd Filetype python setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
 autocmd Filetype haskell setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
+autocmd Filetype yaml setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
