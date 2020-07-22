@@ -14,7 +14,7 @@ abbr md "mkdir"
 
 # ls
 # TODO: pls, check lsd, pls
-alias ls "lsd"
+alias ls "exa"
 
 abbr l "ls"
 alias la  "ls -A"
