@@ -128,7 +128,7 @@ let g:PaperColor_Theme_Options = {
   \ }
 
 let g:lightline = {
-      \ 'colorscheme': 'solarized',
+      \ 'colorscheme': 'jellybeans',
       \ }
 
 colorscheme PaperColor
