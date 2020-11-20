@@ -54,7 +54,7 @@
 
 	# commit shortcuts
 	c = commit
-	ca = commit --amend
+	ca = commit --amend -v
 	ci = commit -m 'Initial commit'
 	cm = commit -m
 	cv = commit -v
