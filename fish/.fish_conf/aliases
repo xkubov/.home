@@ -17,11 +17,9 @@ abbr md "mkdir"
 alias ls "exa"
 
 abbr l "ls"
-alias la  "ls -A"
-alias lA  "ls -a"
-alias ll  "ls -lhA"
-alias lsa "ls -A"
-alias lsA "ls -a"
+alias la  "ls -a"
+alias ll  "ls -lh"
+alias lsa "ls -a"
 
 # open script
 abbr o "open"
