@@ -13,6 +13,11 @@ Host r3
 	ForwardAgent yes
 	User kubov
 
+Host tis02
+	Hostname tis02.srv.int.avast.com
+	ForwardAgent yes
+	User kubov
+
 Host retdecdb
 	Hostname retdecdb.cz.avg.com
 	ForwardAgent yes
