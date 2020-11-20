@@ -30,6 +30,18 @@ Plugin 'ajmwagar/vim-deus'
 Plugin 'morhetz/gruvbox'
 Plugin 'dag/vim-fish'
 Plugin 'junegunn/goyo.vim'
+" Javascript/React
+Plugin 'pangloss/vim-javascript'
+Plugin 'leafgarland/typescript-vim'
+Plugin 'MaxMEllon/vim-jsx-pretty'
+Plugin 'peitalin/vim-jsx-typescript'
+Plugin 'styled-components/vim-styled-components'
+Plugin 'jparise/vim-graphql'
+Plugin 'neoclide/coc-tsserver'
+Plugin 'neoclide/coc-eslint'
+Plugin 'neoclide/coc-prettier'
+Plugin 'neoclide/coc-json'
+Plugin 'neoclide/coc-lists'
 call vundle#end()
 filetype plugin indent on
 
@@ -37,6 +49,38 @@ set nu
 syntax on
 filetype plugin indent on
 set t_Co=256
+
+let g:coc_global_extensions = [
+  \ 'coc-json',
+  \ 'coc-tsserver'
+  \ ]
+if isdirectory('./node_modules') && isdirectory('./node_modules/prettier')
+  let g:coc_global_extensions += ['coc-prettier']
+endif
+
+if isdirectory('./node_modules') && isdirectory('./node_modules/eslint')
+  let g:coc_global_extensions += ['coc-eslint']
+endif
+
+nnoremap <silent> K :call CocAction('doHover')<CR>
+function! ShowDocIfNoDiagnostic(timer_id)
+  if (coc#util#has_float() == 0)
+    silent call CocActionAsync('doHover')
+  endif
+endfunction
+
+function! s:show_hover_doc()
+  call timer_start(500, 'ShowDocIfNoDiagnostic')
+endfunction
+
+autocmd CursorHoldI * :call <SID>show_hover_doc()
+autocmd CursorHold * :call <SID>show_hover_doc()
+
+autocmd CursorHoldI * :call <SID>show_hover_doc()
+autocmd CursorHold * :call <SID>show_hover_doc()
+
+nmap <leader>rn <Plug>(coc-rename)
+nmap <leader>do <Plug>(coc-codeaction)
 
 " This is important as nvim will not turn check spell
 set nospell
@@ -136,10 +180,23 @@ colorscheme PaperColor
 autocmd Filetype python setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
 autocmd Filetype haskell setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
 autocmd Filetype yaml setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
+autocmd Filetype cmake setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
+autocmd Filetype javascript setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
 
+nnoremap <silent> <space>d :<C-u>CocList diagnostics<cr>
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 nmap <silent> gn <Plug>(coc-diagnostic-next)
 nmap <silent> gp <Plug>(coc-diagnostic-prev)
+
+function CopySystem() range
+  echo system('echo '.shellescape(join(getline(a:firstline, a:lastline), "\n")).'| pbcopy')
+endfunction
+
+xnoremap <leader>gy <esc>:'<,'>call CopySystem()<CR>
+
+nnoremap <leader>s :set invspell spelllang=sk<CR>
+autocmd BufEnter *.{js,jsx,ts,tsx} :syntax sync fromstart
+autocmd BufLeave *.{js,jsx,ts,tsx} :syntax sync clear
