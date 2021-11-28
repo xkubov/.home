@@ -1,7 +1,0 @@
-function set_editors()
-{
-	export EDITOR="vim"
-	alias vim="nvim"
-}
-
-set_editors
