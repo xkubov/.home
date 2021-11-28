@@ -3,7 +3,7 @@
 
 [user]
 	name = Peter Kubov
-	email = peter.kubov@avast.com
+	email = xkubov@gmail.com
 
 [color]
 	ui = always
@@ -96,9 +96,6 @@
 	fu = fetch upstream
 	fd = fetch devel
 
-	# init
-	i = init
-
 	# shows a nice tree of the whole repository
 	l = log
 	lp = log -p
@@ -135,8 +132,6 @@
 	# remote
 	re = remote
 	rea = remote add
-	read = remote add devel
-	reau = remote add upstream
 	reao = remote add origin
 	rer = remote remove
 	rerd = remote remove devel

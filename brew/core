@@ -5,3 +5,8 @@ sponge
 tmux
 node
 yarn
+exa
+fzf
+ripgrep
+cmake
+coreutils

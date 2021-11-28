@@ -1,5 +1,0 @@
-#!/usr/bin/env fish
-
-# Set ls to colored output
-set -x CLICOLOR 1
-set -x LSCOLORS ExFxBxDxCxegedabagacad

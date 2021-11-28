@@ -15,11 +15,6 @@ all: core scripts
 
 core: bashc vimc fzfc gitc sshc
 
-fzfc:
-	@rm -rf $(HOME)/.fzf
-	@git clone --depth 1 https://github.com/junegunn/fzf.git $(HOME)/.fzf
-	$(HOME)/.fzf/install --all
-
 vimc: will-save config
 	$(eval O1=$(HOME)/.vimrc)
 	$(eval O2=$(HOME)/.config/nvim)
@@ -77,38 +72,3 @@ sshc:
 	mkdir -p $(HOME)/.ssh
 	rm -rf $(HOME)/.ssh/config
 	ln -s $(PROJECT)/ssh/config $(HOME)/.ssh/config
-
-mac:
-	@/usr/bin/ruby -e "`curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install`"
-	sudo scutil --set HostName xxx
-
-brew:
-	brew install nvim
-	brew install openconnect
-	brew install tmux
-	brew install bash
-	brew install coreutils
-	brew install cmake
-	brew install lsd
-
-arch:
-	sudo pacman -S base-devel
-	sudo pacman -S nvim
-	sudo pacman -S cmake
-	sudo pacman -S git
-	sudo pacman -S lsd
-
-scripts:
-	ln -s $(PROJECT)/.scripts $(HOME)/.scripts
-
-pip:
-	python3 -m install neovim
-	python3 -m install pyvim
-
-.PHONY:
-help:
-	@echo "Home installation Makefile."
-	@echo ""
-	@echo "\thelp: prints this help"
-	@echo "\tall: does everything"
-	@echo "\tcore: installs only core"

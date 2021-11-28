@@ -1,5 +1,0 @@
-#!/bin/bash
-
-SUM=$(echo $@ | sed -E 's/ ?[0-9]*([a-zA-Z]+[0-9]*)+ ?/|/g' | sed -E 's/(^[|]+|[|]+$)//g' | sed -E 's/([0-9]+)[|]+/\1+/g' | tr ' ' '+')
-
-echo $SUM | bc
