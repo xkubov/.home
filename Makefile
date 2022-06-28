@@ -6,6 +6,7 @@
 
 PROJECT=$(PWD)
 BASHDIR=$(PROJECT)/bash
+TMUXDIR=$(PROJECT)/tmux
 VIMDIR=$(PROJECT)/vim
 GITDIR=$(PROJECT)/git
 
@@ -52,6 +53,10 @@ bashc: will-save
 	ln -s $(BASHDIR)/.bashrc $(O2)
 	ln -s $(BASHDIR)/.bash_conf $(O3)
 	cp $(BASHDIR)/.bashrc_local $(HOME)/.bashrc_local
+
+tmuxc:
+	$(eval O1=$(HOME)/.tmux.conf)
+	ln -s $(TMUXDIR)/.tmux.conf $(O1)
 
 config:
 	$(eval O5=$(HOME)/.config)
