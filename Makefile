@@ -29,6 +29,7 @@ vimc: will-save config
 	ln -s $(VIMDIR)/.vimrc $(O1)
 	mkdir -p $(O2)
 	ln -s $(VIMDIR)/.vimrc $(O2)/init.vim
+	ln -s $(VIMDIR)/coc-settings.json $(O2)/coc-settings.json
 	mkdir -p $(O3)
 	@git clone https://github.com/VundleVim/Vundle.vim.git $(O3)/bundle/Vundle.vim
 	vim +PluginInstall +qall
