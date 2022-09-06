@@ -169,3 +169,5 @@
 	stc = stash clear
 	stsd = !git st && git std
 	stsc = !git st && git stc
+[safe]
+	directory = /home/devel/devel
