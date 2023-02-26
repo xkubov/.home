@@ -1,11 +1,11 @@
 set noautochdir
 set nocompatible
-
 set encoding=utf-8
 
 filetype off
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
+Plugin 'puremourning/vimspector'
 Plugin 'GEverding/vim-hocon'
 Plugin 'cespare/vim-toml'
 Plugin 'itchyny/lightline.vim'
@@ -44,7 +44,6 @@ Plugin 'MaxMEllon/vim-jsx-pretty'
 Plugin 'peitalin/vim-jsx-typescript'
 Plugin 'styled-components/vim-styled-components'
 Plugin 'jparise/vim-graphql'
-Plugin 'neoclide/coc-pyright'
 Plugin 'neoclide/coc-tsserver'
 Plugin 'neoclide/coc-eslint'
 Plugin 'neoclide/coc-prettier'
@@ -88,7 +87,12 @@ nnoremap <silent> K :call CocAction('doHover')<CR>
 "autocmd CursorHoldI * :call <SID>show_hover_doc()
 "autocmd CursorHold * :call <SID>show_hover_doc()
 
+nmap <leader>ch <Plug>(coc-callHierarchy)
+nmap <leader>sh <Plug>(coc-semantic-highlights)
+nmap <leader>cl <Plug>(coc-code-lens)
 nmap <leader>rn <Plug>(coc-rename)
+nmap <leader>dc <Plug>(coc-document)
+nmap <leader>sg <Plug>(coc-signature)
 nmap <leader>do <Plug>(coc-codeaction)
 
 " This is important as nvim will not turn check spell
@@ -96,6 +100,9 @@ set nospell
 nnoremap <leader>s :set invspell spelllang=sk<CR>
 nnoremap <leader>e :set invspell spelllang=en_us<CR>
 nnoremap <leader>m :!make<CR>
+nnoremap <leader>t :put =strftime('%Y-%m-%d')<CR>
+nnoremap <leader>wl :put =strftime('[[work-log_%Y-%m-%d\\|Work Log %d. %m. %Y]]')<CR>
+nnoremap <leader>wil :put =strftime('[[ipm-log_%Y-%m-%d\\|IPM Log %d. %m. %Y]]')<CR>
 
 set ruler
 set hlsearch
@@ -121,7 +128,8 @@ nmap <C-k> 5k
 nmap <C-j> 5j
 
 map <C-e> :NERDTreeToggle<CR>
-map ; :Files<CR>
+map ; :GitFiles<CR>
+nnoremap <leader>; :Rg<CR>
 
 nnoremap th  :tabfirst<CR>
 nnoremap tk  :tabnext<CR>
@@ -182,7 +190,6 @@ set laststatus=2
 
 let g:hybrid_custom_term_colors = 1
 set background=dark
-colorscheme hybrid
 
 let g:lightline = {
       \ 'colorscheme': 'jellybeans',
@@ -193,7 +200,7 @@ let g:lightline = {
 
 autocmd Filetype python setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
 autocmd Filetype haskell setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
-autocmd Filetype yaml setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
+autocmd Filetype yaml setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
 autocmd Filetype cmake setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
 autocmd Filetype javascript setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
 autocmd Filetype vimwiki setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
@@ -203,6 +210,8 @@ autocmd Filetype go setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
 autocmd Filetype conf setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
 autocmd Filetype hocon setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
 autocmd Filetype json setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
+autocmd Filetype kotlin setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
+autocmd Filetype c setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
 
 nnoremap <silent> <space>d :<C-u>CocList diagnostics<cr>
 nmap <silent> gd <Plug>(coc-definition)
