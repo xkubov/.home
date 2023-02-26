@@ -1,115 +1,51 @@
-#!/usr/bin/env fish
+# Nightfox Color Palette
+# Style: nightfox
+# Upstream: https://github.com/edeneast/nightfox.nvim/raw/main/extra/nightfox/nightfox_fish.fish
+set -l foreground cdcecf
+set -l selection 2b3b51
+set -l comment 738091
+set -l red c94f6d
+set -l orange f4a261
+set -l yellow dbc074
+set -l green 81b29a
+set -l purple 9d79d6
+set -l cyan 63cdcf
+set -l pink d67ad2
 
-set -x PATH $HOME/install/bin $HOME/.scripts $PATH
+# Syntax Highlighting Colors
+set -g fish_color_normal $foreground
+set -g fish_color_command $cyan
+set -g fish_color_keyword $pink
+set -g fish_color_quote $yellow
+set -g fish_color_redirection $foreground
+set -g fish_color_end $orange
+set -g fish_color_error $red
+set -g fish_color_param $purple
+set -g fish_color_comment $comment
+set -g fish_color_selection --background=$selection
+set -g fish_color_search_match --background=$selection
+set -g fish_color_operator $green
+set -g fish_color_escape $pink
+set -g fish_color_autosuggestion $comment
 
-set -x LC_ALL en_US.UTF-8
-set -x LANG en_US.UTF-8
+# Completion Pager Colors
+set -g fish_pager_color_progress $comment
+set -g fish_pager_color_prefix $cyan
+set -g fish_pager_color_completion $foreground
+set -g fish_pager_color_description $comment
+set -gx HOMEBREW_PREFIX "/opt/homebrew";
+set -gx HOMEBREW_CELLAR "/opt/homebrew/Cellar";
+set -gx HOMEBREW_REPOSITORY "/opt/homebrew";
+set -q PATH; or set PATH ''; set -gx PATH "/opt/homebrew/bin" "/opt/homebrew/sbin" "/Users/peter.kubov/.local/bin" $PATH;
+set -q MANPATH; or set MANPATH ''; set -gx MANPATH "/opt/homebrew/share/man" $MANPATH;
+set -q INFOPATH; or set INFOPATH ''; set -gx INFOPATH "/opt/homebrew/share/info" $INFOPATH;
 
-set -x PATH $PATH /Users/kubov/.fzf/bin
-set -g theme_nerd_fonts yes
-set -g theme_display_date no
-set -g theme_color_scheme terminal
-set -g theme_show_exit_status yes
-set -g default_user kubov
-set -g theme_display_user yes
-set -g theme_display_vi yes
-set -g theme_display_virtualenv yes
-set -g theme_display_cmd_duration yes
-set -g theme_title_display_process yes
-set -g theme_display_hg yes
-set -g theme_display_vagrant yes
-set -x VIRTUAL_ENV_DISABLE_PROMPT yes
+if status is-interactive
+    # Commands to run in interactive sessions can go here
+end
 
-set -x LD_LIBRARY_PATH $HOME/install/lib/
-set -x CXX /opt/gcc-8/bin/g++
-set -x CC /opt/gcc-8/bin/gcc
+alias ls "exa --icons"
+alias python python3
+alias vim nvim
 
-
-abbr b 'build'
-abbr bp 'build -p'
-abbr bd 'build -d -b build-debug'
-abbr bdp 'build -d -b build-debug -p'
-
-# git
-abbr g "git"
-alias gi "git init && git aa && git ci"
-
-# mkdir
-abbr md "mkdir"
-
-# ls
-# TODO: pls, check lsd, pls
-alias ls "exa"
-
-abbr l "ls"
-alias la  "ls -a"
-alias ll  "ls -lh"
-alias lsa "ls -a"
-
-# open script
-abbr o "open"
-abbr oc "vim $HOME/.config/fish/config.fish"
-abbr og "vim $HOME/.gitconfig"
-
-# tmux
-set -x TERM "xterm-256color"
-alias t "tmux"
-alias tmx "tmux"
-
-abbr t "tmux"
-abbr ta "tmux a"
-abbr tl "tmux ls"
-
-# vim
-abbr v "vim"
-abbr vo "vim -O"
-abbr vd "vimdiff"
-
-# Vagrant
-abbr va "vagrant"
-abbr vai "vagrant init"
-abbr vau "vagrant up"
-abbr vah "vagrant halt"
-
-alias nosetests "python3 -m nose"
-
-alias python 'python3'
-alias py python
-alias pip 'pip3'
-
-alias today "date +%Y-%m-%d"
-#!/usr/bin/env fish
-
-# Set ls to colored output
-set -x CLICOLOR 1
-set -x LSCOLORS ExFxBxDxCxegedabagacad
-set -x EDITOR vim
-alias vim="nvim"
-
-
-[ -f ~/.fzf/shell/key-bindings.fish ] && . ~/.fzf/shell/key-bindings.fish
-
-set -x PATH $HOME/.scripts $PATH
-
-set -x PATH $HOME/.local/bin $PATH
-set -x LD_LIBRARY_PATH $HOME/.local/lib $LD_LIBRARY_PATH
-set -x PKG_CONFIG_PATH $HOME/.local/lib/pkgconfig
-
-set -x LC_ALL en_US.UTF-8    
-set -x LANG en_US.UTF-8    
-
-set fish_greeting
-
-set -x PATH $PATH /Users/kubov/.fzf/bin
-set -g theme_nerd_fonts yes
-set -g theme_display_date no
-set -g theme_color_scheme terminal
-set -g theme_show_exit_status yes
-set -g theme_display_user no
-set -g theme_display_vi no
-set -g theme_display_virtualenv yes
-set -g theme_display_cmd_duration yes
-set -g theme_title_display_process yes
-set -g theme_display_hg yes
-set -g theme_display_vagrant yes
-set -x VIRTUAL_ENV_DISABLE_PROMPT yes
+# starship init fish | source
