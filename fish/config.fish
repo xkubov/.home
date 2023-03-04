@@ -48,4 +48,6 @@ alias ls "exa --icons"
 alias python python3
 alias vim nvim
 
+set -x COMPOSE_COMPATIBILITY true
+
 # starship init fish | source

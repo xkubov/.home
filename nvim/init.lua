@@ -79,7 +79,7 @@ require("nvim-treesitter.configs").setup({
 require("mason").setup()
 require("mason-lspconfig").setup({
     ensure_installed = {
-        "sumneko_lua",
+        "lua_ls",
         "rust_analyzer",
         -- "jedi_language_server",
         "pyright",
@@ -191,7 +191,7 @@ require("lspconfig")["rust_analyzer"].setup({
     },
     capabilities = capabilities,
 })
-require("lspconfig").sumneko_lua.setup({
+require("lspconfig").lua_ls.setup({
     on_attach = on_attach,
     flags = lsp_flags,
     settings = {
