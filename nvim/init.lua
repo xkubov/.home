@@ -116,10 +116,6 @@ local is_python = function()
     return vim.bo.filetype == "python"
 end
 
-local is_range_formatting = false
-
-local turn_on_codespell = true
-
 null_ls.setup({
     debug = true,
     on_attach = function(client, bufnr)
@@ -147,13 +143,6 @@ null_ls.setup({
         null_ls.builtins.formatting.stylua,
         null_ls.builtins.formatting.autopep8,
         null_ls.builtins.formatting.isort,
-        null_ls.builtins.formatting.yapf.with({
-            runtime_condition = function(params)
-                local ranged = is_range_formatting
-                is_range_formatting = false
-                return ranged
-            end,
-        }),
         -- null_ls.builtins.diagnostics.mypy,
         -- null_ls.builtins.diagnostics.pylint,
         null_ls.builtins.diagnostics.shellcheck,
@@ -281,11 +270,11 @@ require("noice").setup({
     },
     -- you can enable a preset for easier configuration
     presets = {
-        bottom_search = true, -- use a classic bottom cmdline for search
-        command_palette = true, -- position the cmdline and popupmenu together
+        bottom_search = true,         -- use a classic bottom cmdline for search
+        command_palette = true,       -- position the cmdline and popupmenu together
         long_message_to_split = true, -- long messages will be sent to a split
-        inc_rename = false, -- enables an input dialog for inc-rename.nvim
-        lsp_doc_border = false, -- add a border to hover docs and signature help
+        inc_rename = false,           -- enables an input dialog for inc-rename.nvim
+        lsp_doc_border = false,       -- add a border to hover docs and signature help
     },
 })
 
@@ -296,7 +285,7 @@ require("nightfox").setup({
         -- Compiled file's destination location
         transparent = true,
         terminal_colors = true, -- Set terminal colors (vim.g.terminal_color_*) used in `:terminal`
-        dim_inactive = false, -- Non focused panes set to alternative background
+        dim_inactive = false,   -- Non focused panes set to alternative background
     },
 })
 
@@ -365,8 +354,8 @@ cmp.setup({
         end,
     },
     mapping = cmp.mapping.preset.insert({
-        ["<C-u>"] = cmp.mapping.scroll_docs( -4), -- Up
-        ["<C-d>"] = cmp.mapping.scroll_docs(4), -- Down
+        ["<C-u>"] = cmp.mapping.scroll_docs(-4), -- Up
+        ["<C-d>"] = cmp.mapping.scroll_docs(4),  -- Down
         -- C-b (back) C-f (forward) for snippet placeholder navigation.
         ["<C-q>"] = cmp.mapping.complete(),
         ["<CR>"] = cmp.mapping.confirm({
@@ -385,8 +374,8 @@ cmp.setup({
         ["<S-Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
                 cmp.select_prev_item()
-            elseif luasnip.jumpable( -1) then
-                luasnip.jump( -1)
+            elseif luasnip.jumpable(-1) then
+                luasnip.jump(-1)
             else
                 fallback()
             end
@@ -425,8 +414,8 @@ require("gitsigns").setup({
         untracked = { text = "┆" },
     },
     signcolumn = true, -- Toggle with `:Gitsigns toggle_signs`
-    numhl = false, -- Toggle with `:Gitsigns toggle_numhl`
-    linehl = false, -- Toggle with `:Gitsigns toggle_linehl`
+    numhl = false,     -- Toggle with `:Gitsigns toggle_numhl`
+    linehl = false,    -- Toggle with `:Gitsigns toggle_linehl`
     word_diff = false, -- Toggle with `:Gitsigns toggle_word_diff`
     watch_gitdir = {
         interval = 1000,
@@ -443,7 +432,7 @@ require("gitsigns").setup({
     current_line_blame_formatter = "<author>, <author_time:%Y-%m-%d> - <summary>",
     sign_priority = 6,
     update_debounce = 100,
-    status_formatter = nil, -- Use default
+    status_formatter = nil,  -- Use default
     max_file_length = 40000, -- Disable if file is longer than this (in lines)
     preview_config = {
         -- Options passed to nvim_open_win
