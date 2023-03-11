@@ -124,6 +124,9 @@ local configuration = function(use)
     if packer_bootstrap then
         require("packer").sync()
     end
+
+    use({ "ThePrimeagen/vim-be-good" })
+    use({ "github/copilot.vim" })
 end
 
 return require("packer").startup(configuration)

@@ -162,6 +162,7 @@
 	lin = !git ls-files -o --exclude-standard --full-name
 	# lists modified files in repository
 	lim = !git ls-files -m
+	ls = !git diff-tree --no-commit-id --name-only -r ${@:-HEAD} && true
 
 	st = stash
 	stp = stash pop

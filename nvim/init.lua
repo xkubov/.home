@@ -7,10 +7,13 @@ vim.opt.ruler = true
 vim.opt.hlsearch = true
 vim.opt.wildmode = "longest,list"
 vim.opt.laststatus = 2
+vim.opt.relativenumber = true
 
 vim.wo.number = true
 
 local opts = { noremap = true, silent = true }
+
+vim.g.mapleader = " "
 
 vim.api.nvim_set_keymap("n", "<C-w>1", ":tabn 1<CR>", opts)
 vim.api.nvim_set_keymap("n", "<C-w>2", ":tabn 2<CR>", opts)
@@ -22,6 +25,11 @@ vim.api.nvim_set_keymap("n", "<C-w>7", ":tabn 7<CR>", opts)
 vim.api.nvim_set_keymap("n", "<C-w>8", ":tabn 8<CR>", opts)
 vim.api.nvim_set_keymap("n", "<C-w>9", ":tabn 9<CR>", opts)
 
+vim.api.nvim_set_keymap("n", "<C-d>", "<C-d>zz", opts)
+vim.api.nvim_set_keymap("n", "<C-u>", "<C-u>zz", opts)
+vim.api.nvim_set_keymap("n", "<C-f>", "<C-f>zz", opts)
+vim.api.nvim_set_keymap("n", "<C-b>", "<C-b>zz", opts)
+
 vim.api.nvim_set_keymap("n", "th", ":tabfirst<CR>", opts)
 vim.api.nvim_set_keymap("n", "tl", ":tabnext<CR>", opts)
 vim.api.nvim_set_keymap("n", "th", ":tabprev<CR>", opts)
@@ -30,29 +38,37 @@ vim.api.nvim_set_keymap("n", "<C-w>c", ":tabedit<CR>", opts)
 
 vim.api.nvim_set_keymap("n", "<leader>s", ":set invspell spelllang=sk<CR>", opts)
 vim.api.nvim_set_keymap("n", "<leader>e", ":set invspell spelllang=en_us<CR>", opts)
-vim.api.nvim_set_keymap("n", "<space><space>", "<Ctrl-space>", opts)
+vim.api.nvim_set_keymap("n", "<leader><space>", "<Ctrl-space>", opts)
 
 vim.api.nvim_set_keymap("n", "<C-e>", ":NvimTreeToggle<CR>", opts)
-vim.api.nvim_set_keymap("n", "<space><space>", ":VimwikiToggleListItem<CR>", opts)
+vim.api.nvim_set_keymap("n", "<leader><space>", ":VimwikiToggleListItem<CR>", opts)
 
 vim.cmd([[
-  autocmd Filetype c setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
-  autocmd Filetype cmake setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
-  autocmd Filetype conf setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
-  autocmd Filetype go setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
-  autocmd Filetype haskell setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
-  autocmd Filetype hocon setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
-  autocmd Filetype javascript setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
-  autocmd Filetype json setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
-  autocmd Filetype kotlin setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
-  autocmd Filetype lua setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
-  autocmd Filetype markdown setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
-  autocmd Filetype python setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
-  autocmd Filetype toml setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
-  autocmd Filetype html setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
-  autocmd Filetype jinja2 setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
-  autocmd Filetype vimwiki setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
-  autocmd Filetype yaml setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
+    imap <silent><script><expr> <C-l> copilot#Accept("\<CR>")
+    let g:copilot_no_tab_map = v:true
+    imap <silent> <C-j> <Plug>(copilot-next)
+    imap <silent> <C-k> <Plug>(copilot-previous)
+    imap <silent> <C-h> <Plug>(copilot-dismiss)
+]])
+
+vim.cmd([[
+    autocmd Filetype c setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
+    autocmd Filetype cmake setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
+    autocmd Filetype conf setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
+    autocmd Filetype go setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
+    autocmd Filetype haskell setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
+    autocmd Filetype hocon setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
+    autocmd Filetype javascript setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
+    autocmd Filetype json setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
+    autocmd Filetype kotlin setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
+    autocmd Filetype lua setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
+    autocmd Filetype markdown setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
+    autocmd Filetype python setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
+    autocmd Filetype toml setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
+    autocmd Filetype html setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
+    autocmd Filetype jinja2 setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
+    autocmd Filetype vimwiki setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
+    autocmd Filetype yaml setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
 ]])
 
 require("nvim-treesitter.configs").setup({
@@ -85,7 +101,6 @@ require("mason-lspconfig").setup({
     ensure_installed = {
         "lua_ls",
         "rust_analyzer",
-        -- "jedi_language_server",
         "pyright",
     },
     automatic_installation = true,
@@ -97,8 +112,19 @@ local null_ls = require("null-ls")
 
 local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 
+local is_python = function()
+    return vim.bo.filetype == "python"
+end
+
+local is_range_formatting = false
+
+local turn_on_codespell = true
+
 null_ls.setup({
+    debug = true,
     on_attach = function(client, bufnr)
+        -- I needed to temporarily turn off support for Python autoformatting.
+        -- if not is_python() and client.supports_method("textDocument/formatting") then
         if client.supports_method("textDocument/formatting") then
             vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
             vim.api.nvim_create_autocmd("BufWritePre", {
@@ -113,28 +139,39 @@ null_ls.setup({
     sources = {
         null_ls.builtins.formatting.shfmt,
         null_ls.builtins.completion.spell,
-        null_ls.builtins.formatting.codespell,
+        null_ls.builtins.formatting.codespell.with({
+            runtime_condition = function(params)
+                return turn_on_codespell
+            end,
+        }),
         null_ls.builtins.formatting.stylua,
+        null_ls.builtins.formatting.autopep8,
         null_ls.builtins.formatting.isort,
-        null_ls.builtins.formatting.black,
-        null_ls.builtins.formatting.isort,
-        null_ls.builtins.formatting.black,
+        null_ls.builtins.formatting.yapf.with({
+            runtime_condition = function(params)
+                local ranged = is_range_formatting
+                is_range_formatting = false
+                return ranged
+            end,
+        }),
+        -- null_ls.builtins.diagnostics.mypy,
+        -- null_ls.builtins.diagnostics.pylint,
         null_ls.builtins.diagnostics.shellcheck,
         null_ls.builtins.diagnostics.hadolint,
-        null_ls.builtins.diagnostics.pylint,
-        null_ls.builtins.diagnostics.mypy,
-        null_ls.builtins.formatting.djhtml,
-        null_ls.builtins.formatting.djlint,
+        -- null_ls.builtins.formatting.djhtml,
+        -- null_ls.builtins.formatting.djlint,
         null_ls.builtins.hover.printenv,
     },
 })
 
+-- null_ls.server_capabilities.documentFormattingProvider = false
+
 -- Setup LSP
 
-vim.keymap.set("n", "<space>e", vim.diagnostic.open_float, opts)
+vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, opts)
 vim.keymap.set("n", "gp", vim.diagnostic.goto_prev, opts)
 vim.keymap.set("n", "gn", vim.diagnostic.goto_next, opts)
-vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist, opts)
+vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, opts)
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
@@ -150,16 +187,16 @@ local on_attach = function(_, bufnr)
     vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
     vim.keymap.set("n", "gi", vim.lsp.buf.implementation, bufopts)
     vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, bufopts)
-    vim.keymap.set("n", "<space>wa", vim.lsp.buf.add_workspace_folder, bufopts)
-    vim.keymap.set("n", "<space>wr", vim.lsp.buf.remove_workspace_folder, bufopts)
-    vim.keymap.set("n", "<space>wl", function()
+    vim.keymap.set("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, bufopts)
+    vim.keymap.set("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, bufopts)
+    vim.keymap.set("n", "<leader>wl", function()
         print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
     end, bufopts)
-    vim.keymap.set("n", "<space>D", vim.lsp.buf.type_definition, bufopts)
-    vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, bufopts)
-    vim.keymap.set("n", "<space>ca", vim.lsp.buf.code_action, bufopts)
+    vim.keymap.set("n", "<leader>D", vim.lsp.buf.type_definition, bufopts)
+    vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, bufopts)
+    vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, bufopts)
     -- vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
-    vim.keymap.set("n", "<space>f", function()
+    vim.keymap.set("n", "<leader>f", function()
         vim.lsp.buf.format({ async = true })
     end, bufopts)
 end
@@ -171,11 +208,6 @@ local lsp_flags = {
     -- This is the default in Nvim 0.7+
     debounce_text_changes = 150,
 }
--- require("lspconfig")["jedi_language_server"].setup({
---     on_attach = on_attach,
---     flags = lsp_flags,
---     capabilities = capabilities,
--- })
 require("lspconfig")["pyright"].setup({
     on_attach = on_attach,
     flags = lsp_flags,
@@ -370,14 +402,16 @@ cmp.setup({
 
 local builtin = require("telescope.builtin")
 
-vim.keymap.set("n", ";", builtin.find_files, {})
-vim.keymap.set("n", "<leader>;", builtin.live_grep, {})
+vim.keymap.set("n", "<leader>;", builtin.find_files, {})
+vim.keymap.set("n", "<leader>'", builtin.live_grep, {})
 vim.keymap.set("n", "<leader>fb", builtin.buffers, {})
 vim.keymap.set("n", "<leader>fh", builtin.help_tags, {})
 vim.keymap.set("n", "gr", builtin.lsp_references, {})
 vim.keymap.set("n", "gd", builtin.lsp_definitions, {})
 vim.keymap.set("n", "gD", builtin.lsp_type_definitions, {})
 vim.keymap.set("n", "gi", builtin.lsp_implementations, {})
+vim.keymap.set("n", "gs", builtin.lsp_dynamic_workspace_symbols, {})
+vim.keymap.set("n", "gS", builtin.lsp_workspace_symbols, {})
 
 -- Git
 
@@ -429,29 +463,72 @@ require("gitsigns").setup({
 local alpha = require("alpha")
 local dashboard = require("alpha.themes.dashboard")
 
--- Set header
-dashboard.section.header.val = {
-    "      ███╗   ███╗ █████╗  ██████╗ ██╗ ██████╗      ",
-    "      ████╗ ████║██╔══██╗██╔════╝ ██║██╔════╝      ",
-    "      ██╔████╔██║███████║██║  ███╗██║██║           ",
-    "      ██║╚██╔╝██║██╔══██║██║   ██║██║██║           ",
-    "      ██║ ╚═╝ ██║██║  ██║╚██████╔╝██║╚██████╗      ",
-    "      ╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝ ╚═════╝      ",
-    "                                                   ",
-    " ██████╗ █████╗ ███╗   ██╗██╗   ██╗ █████╗ ███████╗",
-    "██╔════╝██╔══██╗████╗  ██║██║   ██║██╔══██╗██╔════╝",
-    "██║     ███████║██╔██╗ ██║██║   ██║███████║███████╗",
-    "██║     ██╔══██║██║╚██╗██║╚██╗ ██╔╝██╔══██║╚════██║",
-    "╚██████╗██║  ██║██║ ╚████║ ╚████╔╝ ██║  ██║███████║",
-    " ╚═════╝╚═╝  ╚═╝╚═╝  ╚═══╝  ╚═══╝  ╚═╝  ╚═╝╚══════╝",
+local splash_screen_banners = {
+    {
+        "      ███╗   ███╗ █████╗  ██████╗ ██╗ ██████╗      ",
+        "      ████╗ ████║██╔══██╗██╔════╝ ██║██╔════╝      ",
+        "      ██╔████╔██║███████║██║  ███╗██║██║           ",
+        "      ██║╚██╔╝██║██╔══██║██║   ██║██║██║           ",
+        "      ██║ ╚═╝ ██║██║  ██║╚██████╔╝██║╚██████╗      ",
+        "      ╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝ ╚═════╝      ",
+        "                                                   ",
+        " ██████╗ █████╗ ███╗   ██╗██╗   ██╗ █████╗ ███████╗",
+        "██╔════╝██╔══██╗████╗  ██║██║   ██║██╔══██╗██╔════╝",
+        "██║     ███████║██╔██╗ ██║██║   ██║███████║███████╗",
+        "██║     ██╔══██║██║╚██╗██║╚██╗ ██╔╝██╔══██║╚════██║",
+        "╚██████╗██║  ██║██║ ╚████║ ╚████╔╝ ██║  ██║███████║",
+        " ╚═════╝╚═╝  ╚═╝╚═╝  ╚═══╝  ╚═══╝  ╚═╝  ╚═╝╚══════╝",
+    },
+    {
+        "▄█▄    ████▄ ██▄   ▄███▄       █    ▄█ █  █▀ ▄███▄     ",
+        "█▀ ▀▄  █   █ █  █  █▀   ▀      █    ██ █▄█   █▀   ▀    ",
+        "█   ▀  █   █ █   █ ██▄▄        █    ██ █▀▄   ██▄▄      ",
+        "█▄  ▄▀ ▀████ █  █  █▄   ▄▀     ███▄ ▐█ █  █  █▄   ▄▀   ",
+        "▀███▀        ███▀  ▀███▀           ▀ ▐   █   ▀███▀     ",
+        "                                        ▀              ",
+        "                                                       ",
+        "   ▄▄▄▄▀ ▄  █ ▄███▄       ██▄   ▄███▄      ▄   ▄█ █    ",
+        "▀▀▀ █   █   █ █▀   ▀      █  █  █▀   ▀      █  ██ █    ",
+        "    █   ██▀▀█ ██▄▄        █   █ ██▄▄   █     █ ██ █    ",
+        "   █    █   █ █▄   ▄▀     █  █  █▄   ▄▀ █    █ ▐█ ███▄ ",
+        "  ▀        █  ▀███▀       ███▀  ▀███▀    █  █   ▐     ▀",
+        "          ▀                               █▐           ",
+        "                                          ▐            ",
+    },
+    {
+        " ███▄    █  ▒█████     ▓█████   ██████  ▄████▄   ▄▄▄       ██▓███  ▓█████ ",
+        " ██ ▀█   █ ▒██▒  ██▒   ▓█   ▀ ▒██    ▒ ▒██▀ ▀█  ▒████▄    ▓██░  ██▒▓█   ▀ ",
+        "▓██  ▀█ ██▒▒██░  ██▒   ▒███   ░ ▓██▄   ▒▓█    ▄ ▒██  ▀█▄  ▓██░ ██▓▒▒███   ",
+        "▓██▒  ▐▌██▒▒██   ██░   ▒▓█  ▄   ▒   ██▒▒▓▓▄ ▄██▒░██▄▄▄▄██ ▒██▄█▓▒ ▒▒▓█  ▄ ",
+        "▒██░   ▓██░░ ████▓▒░   ░▒████▒▒██████▒▒▒ ▓███▀ ░ ▓█   ▓██▒▒██▒ ░  ░░▒████▒",
+        "░ ▒░   ▒ ▒ ░ ▒░▒░▒░    ░░ ▒░ ░▒ ▒▓▒ ▒ ░░ ░▒ ▒  ░ ▒▒   ▓▒█░▒▓▒░ ░  ░░░ ▒░ ░",
+        "░ ░░   ░ ▒░  ░ ▒ ▒░     ░ ░  ░░ ░▒  ░ ░  ░  ▒     ▒   ▒▒ ░░▒ ░      ░ ░  ░",
+        "   ░   ░ ░ ░ ░ ░ ▒        ░   ░  ░  ░  ░          ░   ▒   ░░          ░   ",
+        "         ░     ░ ░        ░  ░      ░  ░ ░            ░  ░            ░  ░",
+        "                                       ░                                  ",
+        "      █████▒██▀███   ▒█████   ███▄ ▄███▓    ██▒   █▓ ██▓ ███▄ ▄███▓       ",
+        "    ▓██   ▒▓██ ▒ ██▒▒██▒  ██▒▓██▒▀█▀ ██▒   ▓██░   █▒▓██▒▓██▒▀█▀ ██▒       ",
+        "    ▒████ ░▓██ ░▄█ ▒▒██░  ██▒▓██    ▓██░    ▓██  █▒░▒██▒▓██    ▓██░       ",
+        "    ░▓█▒  ░▒██▀▀█▄  ▒██   ██░▒██    ▒██      ▒██ █░░░██░▒██    ▒██        ",
+        "    ░▒█░   ░██▓ ▒██▒░ ████▓▒░▒██▒   ░██▒      ▒▀█░  ░██░▒██▒   ░██▒       ",
+        "     ▒ ░   ░ ▒▓ ░▒▓░░ ▒░▒░▒░ ░ ▒░   ░  ░      ░ ▐░  ░▓  ░ ▒░   ░  ░       ",
+        "     ░       ░▒ ░ ▒░  ░ ▒ ▒░ ░  ░      ░      ░ ░░   ▒ ░░  ░      ░       ",
+        "     ░ ░     ░░   ░ ░ ░ ░ ▒  ░      ░           ░░   ▒ ░░      ░          ",
+        "              ░         ░ ░         ░            ░   ░         ░          ",
+        "                                                ░                         ",
+    },
 }
+
+-- Set header
+dashboard.section.header.val = splash_screen_banners[math.random(1, #splash_screen_banners)]
 
 -- Set menu
 dashboard.section.buttons.val = {
     dashboard.button("e", "  > New file", ":ene <BAR> startinsert <CR>"),
     dashboard.button("f", "  > Find file", ":cd $HOME/projects | Telescope find_files<CR>"),
     dashboard.button("r", "  > Recent", ":Telescope oldfiles<CR>"),
-    dashboard.button("s", "  > Wiki", "<leader>ww<CR>"),
+    -- TODO: make wiki command more intelligently. It should be able to use keymap.
+    dashboard.button("w", "  > Wiki", ":e ~/vimwiki/index.wiki<CR>"),
     dashboard.button("s", "  > Settings", ":e $MYVIMRC | :cd %:p:h | split . | wincmd k | pwd<CR>"),
     dashboard.button("q", "  > Quit NVIM", ":qa<CR>"),
 }
@@ -464,15 +541,11 @@ alpha.setup(dashboard.opts)
 
 -- Disable folding on alpha buffer
 vim.cmd([[
-        autocmd FileType alpha setlocal nofoldenable
-    ]])
-
--- Disable folding on alpha buffer
-vim.cmd([[
-        autocmd FileType alpha setlocal nofoldenable
-    ]])
+    autocmd FileType alpha setlocal nofoldenable
+]])
 
 function FormatFunction()
+    is_range_formatting = true
     vim.lsp.buf.format({
         async = true,
         range = {
@@ -482,6 +555,11 @@ function FormatFunction()
     })
 end
 
+function ToggleCodespell()
+    turn_on_codespell = not turn_on_codespell
+end
+
 vim.api.nvim_set_keymap("v", "<leader>ff", ":lua FormatFunction()<CR>", opts)
+vim.api.nvim_set_keymap("n", "<leader>fc", ":lua ToggleCodespell()<CR>", opts)
 
 require("telescope").load_extension("notify")
