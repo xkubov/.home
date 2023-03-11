@@ -47,6 +47,8 @@ vim.cmd([[
   autocmd Filetype markdown setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
   autocmd Filetype python setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
   autocmd Filetype toml setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
+  autocmd Filetype html setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
+  autocmd Filetype jinja2 setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
   autocmd Filetype vimwiki setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
   autocmd Filetype yaml setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
 ]])
@@ -266,6 +268,8 @@ require("nightfox").setup({
 
 require("notify").setup({
     background_colour = "#000000",
+    top_down = false,
+    render = "compact",
 })
 
 vim.cmd("colorscheme nightfox")
@@ -457,5 +461,24 @@ alpha.setup(dashboard.opts)
 
 -- Disable folding on alpha buffer
 vim.cmd([[
-    autocmd FileType alpha setlocal nofoldenable
-]])
+        autocmd FileType alpha setlocal nofoldenable
+    ]])
+
+-- Disable folding on alpha buffer
+vim.cmd([[
+        autocmd FileType alpha setlocal nofoldenable
+    ]])
+
+function FormatFunction()
+    vim.lsp.buf.format({
+        async = true,
+        range = {
+            ["start"] = vim.api.nvim_buf_get_mark(0, "<"),
+            ["end"] = vim.api.nvim_buf_get_mark(0, ">"),
+        },
+    })
+end
+
+vim.api.nvim_set_keymap("v", "<leader>ff", ":lua FormatFunction()<CR>", opts)
+
+require("telescope").load_extension("notify")
