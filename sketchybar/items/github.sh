@@ -15,8 +15,8 @@ github_bell=(
 	background.border_width=2
 	icon.padding_left=13
 	label.padding_right=13
-	padding_left=26
-	padding_right=26
+	padding_left=13
+	padding_right=13
 )
 
 github_template=(
