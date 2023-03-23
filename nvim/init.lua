@@ -30,8 +30,10 @@ vim.api.nvim_set_keymap("n", "<C-w>c", ":tabedit<CR>", opts)
 
 vim.api.nvim_set_keymap("n", "<leader>s", ":set invspell spelllang=sk<CR>", opts)
 vim.api.nvim_set_keymap("n", "<leader>e", ":set invspell spelllang=en_us<CR>", opts)
+vim.api.nvim_set_keymap("n", "<space><space>", "<Ctrl-space>", opts)
 
 vim.api.nvim_set_keymap("n", "<C-e>", ":NvimTreeToggle<CR>", opts)
+vim.api.nvim_set_keymap("n", "<space><space>", ":VimwikiToggleListItem<CR>", opts)
 
 vim.cmd([[
   autocmd Filetype c setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
@@ -449,6 +451,7 @@ dashboard.section.buttons.val = {
     dashboard.button("e", "  > New file", ":ene <BAR> startinsert <CR>"),
     dashboard.button("f", "  > Find file", ":cd $HOME/projects | Telescope find_files<CR>"),
     dashboard.button("r", "  > Recent", ":Telescope oldfiles<CR>"),
+    dashboard.button("s", "  > Wiki", "<leader>ww<CR>"),
     dashboard.button("s", "  > Settings", ":e $MYVIMRC | :cd %:p:h | split . | wincmd k | pwd<CR>"),
     dashboard.button("q", "  > Quit NVIM", ":qa<CR>"),
 }
