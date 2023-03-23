@@ -10,6 +10,7 @@ btc_logo=(
 	icon.color=$ORANGE
 	background.border_width=2
 	align=center
+	update_freq=60
 	script="~/.config/sketchybar/plugins/crypto.py"
 )
 
@@ -24,6 +25,7 @@ eth_logo=(
 	icon.color=$MAGENTA
 	background.border_width=2
 	align=center
+	update_freq=60
 	script="~/.config/sketchybar/plugins/crypto.py"
 )
 
