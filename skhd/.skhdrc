@@ -1,5 +1,5 @@
 cmd - return: open -n /Applications/Alacritty.app
-alt - return: open /Applications/Brave\ Browser.app
+alt - return: open -n /Applications/Brave\ Browser.app
 
 # Navigation
 cmd - h : yabai -m window --focus west
