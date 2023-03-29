@@ -116,6 +116,10 @@ local is_python = function()
     return vim.bo.filetype == "python"
 end
 
+local is_range_formatting = false
+
+local turn_on_codespell = false
+
 null_ls.setup({
     debug = true,
     on_attach = function(client, bufnr)
@@ -143,6 +147,13 @@ null_ls.setup({
         null_ls.builtins.formatting.stylua,
         null_ls.builtins.formatting.autopep8,
         null_ls.builtins.formatting.isort,
+        null_ls.builtins.formatting.yapf.with({
+            runtime_condition = function(params)
+                local ranged = is_range_formatting
+                is_range_formatting = false
+                return ranged
+            end,
+        }),
         -- null_ls.builtins.diagnostics.mypy,
         -- null_ls.builtins.diagnostics.pylint,
         null_ls.builtins.diagnostics.shellcheck,
