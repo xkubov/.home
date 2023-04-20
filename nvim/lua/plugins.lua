@@ -28,13 +28,13 @@ local configuration = function(use)
         requires = { "nvim-lua/plenary.nvim" },
     })
 
-    use("neovim/nvim-lspconfig") -- Configurations for nvim LSP
-    use("hrsh7th/nvim-cmp") -- Autocompletion plugin
-    use("hrsh7th/cmp-nvim-lsp") -- LSP source for nvim-cmp
-    use("mfussenegger/nvim-dap") -- Debugger
+    use("neovim/nvim-lspconfig")    -- Configurations for nvim LSP
+    use("hrsh7th/nvim-cmp")         -- Autocompletion plugin
+    use("hrsh7th/cmp-nvim-lsp")     -- LSP source for nvim-cmp
+    use("mfussenegger/nvim-dap")    -- Debugger
     use("saadparwaiz1/cmp_luasnip") -- Snippets source for nvim-cmp
-    use("L3MON4D3/LuaSnip") -- Snippets plugin
-    use("rstacruz/vim-closer") -- Closes brackets.
+    use("L3MON4D3/LuaSnip")         -- Snippets plugin
+    use("rstacruz/vim-closer")      -- Closes brackets.
 
     -- Indentation guides.
     use("lukas-reineke/indent-blankline.nvim")
@@ -82,7 +82,7 @@ local configuration = function(use)
     -- Fuzzy search
     use({
         "nvim-telescope/telescope.nvim",
-        tag = "0.1.1",
+        tag = "0.1.4",
         requires = { { "nvim-lua/plenary.nvim" } },
     })
 
@@ -126,7 +126,9 @@ local configuration = function(use)
     end
 
     use({ "ThePrimeagen/vim-be-good" })
-    use({ "github/copilot.vim" })
+    -- use({ "github/copilot.vim" })
+    use({ "mbbill/undotree" })
+    use({ "jay-babu/mason-null-ls.nvim" })
 end
 
 return require("packer").startup(configuration)

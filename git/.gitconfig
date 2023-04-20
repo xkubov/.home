@@ -1,5 +1,25 @@
+[include]
+    path = /Users/kubov/.config/delta/themes.gitconfig
+
 [core]
 	editor = nvim
+    pager = delta
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    features = arctic-fox
+    navigate = true
+    line-numbers = true
+
+[diff]
+    # renames = copies
+    # tool = vimdiff
+    colorMoved = default
+
+[merge]
+    conflictstyle = diff3
 
 [user]
 	name = Peter Kubov
@@ -15,10 +35,6 @@
 
 [rerere]
 	enabled = true
-
-[diff]
-	renames = copies
-	tool = vimdiff
 
 [log]
 	date = relative
@@ -48,6 +64,7 @@
 	bd = branch -D
 	bf = b --format='%(refname:short)'
 	br = branch -r
+	bm = branch -m
 
 	# blame them
 	bl = !git blame `fzf`
@@ -112,22 +129,15 @@
 
 	# push
 	p = push
-	pd = push devel
-	po = push origin
-	pu = push upstream
-	pom = push origin master
+	ps = push -o ci.skip
 
 	# rebase shortcuts
 	r  = rebase
 	ra = rebase --abort
 	rc = rebase --continue
 	ri = rebase -i
-	rm = rebase master
-	ru = rebase upstream/master
-	rom = rebase origin/master
-	rim = rebase -i master
-	riom = rebase -i origin/master
-	rium = rebase -i upstream/master
+	rm = rebase origin/master
+	rim = rebase -i origin/master
 
 	# remote
 	re = remote
@@ -170,5 +180,8 @@
 	stc = stash clear
 	stsd = !git st && git std
 	stsc = !git st && git stc
+	t = tag
+	td = tag -d
+	count-lines = "! git log --author=\"$1\" --pretty=tformat: --numstat | awk '{ add += $1; subs += $2; loc += $1 - $2 } END { printf \"added lines: %s, removed lines: %s, total lines: %s\\n\", add, subs, loc }' #"
 [safe]
 	directory = /home/devel/devel

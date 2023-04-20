@@ -30,6 +30,8 @@ vim.api.nvim_set_keymap("n", "<C-u>", "<C-u>zz", opts)
 vim.api.nvim_set_keymap("n", "<C-f>", "<C-f>zz", opts)
 vim.api.nvim_set_keymap("n", "<C-b>", "<C-b>zz", opts)
 
+vim.api.nvim_set_keymap("n", "<backspace>", "<C-^>", opts)
+
 vim.api.nvim_set_keymap("n", "th", ":tabfirst<CR>", opts)
 vim.api.nvim_set_keymap("n", "tl", ":tabnext<CR>", opts)
 vim.api.nvim_set_keymap("n", "th", ":tabprev<CR>", opts)
@@ -42,6 +44,8 @@ vim.api.nvim_set_keymap("n", "<leader><space>", "<Ctrl-space>", opts)
 
 vim.api.nvim_set_keymap("n", "<C-e>", ":NvimTreeToggle<CR>", opts)
 vim.api.nvim_set_keymap("n", "<leader><space>", ":VimwikiToggleListItem<CR>", opts)
+
+vim.api.nvim_set_keymap("i", "<C-d>", "<del>", opts)
 
 vim.cmd([[
     imap <silent><script><expr> <C-l> copilot#Accept("\<CR>")
@@ -72,24 +76,31 @@ vim.cmd([[
 ]])
 
 require("nvim-treesitter.configs").setup({
-    -- A list of parser names, or "all" (the four listed parsers should always be installed)
+    -- A list of parser names, or "all" (the five listed parsers should always be installed)
     ensure_installed = "all",
+    -- Install parsers synchronously (only applied to `ensure_installed`)
     sync_install = false,
+    -- Automatically install missing parsers when entering buffer
+    -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
     auto_install = true,
-    ignore_install = {},
-    indent = {
-        enable = true,
-    },
-    highlight = {
-        -- `false` will disable the whole extension
-        enable = true,
+    ---- If you need to change the installation directory of the parsers (see -> Advanced Setup)
+    -- parser_install_dir = "/some/path/to/store/parsers", -- Remember to run vim.opt.runtimepath:append("/some/path/to/store/parsers")!
 
-        disable = function(_, buf)
-            local max_filesize = 100 * 1024 -- 100 KB
+    highlight = {
+        enable = true,
+        -- Or use a function for more flexibility, e.g. to disable slow treesitter highlight for large files
+        disable = function(lang, buf)
+            local max_filesize = 1024 * 1024 -- 100 KB
             local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
-            return ok and stats and stats.size > max_filesize
+            if ok and stats and stats.size > max_filesize then
+                return true
+            end
         end,
 
+        -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+        -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+        -- Using this option may slow down your editor, and you may see some duplicate highlights.
+        -- Instead of true it can also be a list of languages
         additional_vim_regex_highlighting = false,
     },
 })
@@ -102,6 +113,18 @@ require("mason-lspconfig").setup({
         "lua_ls",
         "rust_analyzer",
         "pyright",
+    },
+    automatic_installation = true,
+})
+require("mason-null-ls").setup({
+    ensure_installed = {
+        "stylua",
+        "prettier",
+        "black",
+        "isort",
+        "codespell",
+        "shellcheck",
+        "ruff",
     },
     automatic_installation = true,
 })
@@ -145,22 +168,24 @@ null_ls.setup({
             end,
         }),
         null_ls.builtins.formatting.stylua,
-        null_ls.builtins.formatting.autopep8,
+        null_ls.builtins.diagnostics.shellcheck,
+        null_ls.builtins.diagnostics.ruff,
+        null_ls.builtins.diagnostics.hadolint,
+        null_ls.builtins.hover.printenv,
+        null_ls.builtins.formatting.black,
         null_ls.builtins.formatting.isort,
-        null_ls.builtins.formatting.yapf.with({
-            runtime_condition = function(params)
-                local ranged = is_range_formatting
-                is_range_formatting = false
-                return ranged
-            end,
-        }),
+        -- null_ls.builtins.formatting.autopep8,
+        -- null_ls.builtins.formatting.yapf.with({
+        --     runtime_condition = function(params)
+        --         local ranged = is_range_formatting
+        --         is_range_formatting = false
+        --         return ranged
+        --     end,
+        -- }),
         -- null_ls.builtins.diagnostics.mypy,
         -- null_ls.builtins.diagnostics.pylint,
-        null_ls.builtins.diagnostics.shellcheck,
-        null_ls.builtins.diagnostics.hadolint,
         -- null_ls.builtins.formatting.djhtml,
         -- null_ls.builtins.formatting.djlint,
-        null_ls.builtins.hover.printenv,
     },
 })
 
