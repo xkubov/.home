@@ -118,7 +118,7 @@ end
 
 local is_range_formatting = false
 
-local turn_on_codespell = false
+local turn_on_codespell = true
 
 null_ls.setup({
     debug = true,
