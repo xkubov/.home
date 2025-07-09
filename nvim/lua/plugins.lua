@@ -24,7 +24,7 @@ local configuration = function(use)
 
     -- Linting & Formatting.
     use({
-        "jose-elias-alvarez/null-ls.nvim",
+        "nvimtools/none-ls.nvim",
         requires = { "nvim-lua/plenary.nvim" },
     })
 

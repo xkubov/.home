@@ -47,13 +47,12 @@ vim.api.nvim_set_keymap("n", "<leader><space>", ":VimwikiToggleListItem<CR>", op
 
 vim.api.nvim_set_keymap("i", "<C-d>", "<del>", opts)
 
-vim.cmd([[
-    imap <silent><script><expr> <C-l> copilot#Accept("\<CR>")
-    let g:copilot_no_tab_map = v:true
-    imap <silent> <C-j> <Plug>(copilot-next)
-    imap <silent> <C-k> <Plug>(copilot-previous)
-    imap <silent> <C-h> <Plug>(copilot-dismiss)
-]])
+-- Setup LSP
+
+vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, opts)
+vim.keymap.set("n", "gp", vim.diagnostic.goto_prev, opts)
+vim.keymap.set("n", "gn", vim.diagnostic.goto_next, opts)
+vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, opts)
 
 vim.cmd([[
     autocmd Filetype c setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
@@ -113,17 +112,6 @@ require("mason-lspconfig").setup({
         "lua_ls",
         "rust_analyzer",
         "pyright",
-    },
-    automatic_installation = true,
-})
-require("mason-null-ls").setup({
-    ensure_installed = {
-        "stylua",
-        "prettier",
-        "black",
-        "isort",
-        "codespell",
-        "shellcheck",
         "ruff",
     },
     automatic_installation = true,
@@ -131,72 +119,10 @@ require("mason-null-ls").setup({
 
 -- Setup linting & formatting
 
-local null_ls = require("null-ls")
-
 local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
-
-local is_python = function()
-    return vim.bo.filetype == "python"
-end
-
-local is_range_formatting = false
-
 local turn_on_codespell = true
 
-null_ls.setup({
-    debug = true,
-    on_attach = function(client, bufnr)
-        -- I needed to temporarily turn off support for Python autoformatting.
-        -- if not is_python() and client.supports_method("textDocument/formatting") then
-        if client.supports_method("textDocument/formatting") then
-            vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
-            vim.api.nvim_create_autocmd("BufWritePre", {
-                group = augroup,
-                buffer = bufnr,
-                callback = function()
-                    vim.lsp.buf.format({ bufnr = bufnr })
-                end,
-            })
-        end
-    end,
-    sources = {
-        null_ls.builtins.formatting.shfmt,
-        null_ls.builtins.completion.spell,
-        null_ls.builtins.formatting.codespell.with({
-            runtime_condition = function(params)
-                return turn_on_codespell
-            end,
-        }),
-        null_ls.builtins.formatting.stylua,
-        null_ls.builtins.diagnostics.shellcheck,
-        null_ls.builtins.diagnostics.ruff,
-        null_ls.builtins.diagnostics.hadolint,
-        null_ls.builtins.hover.printenv,
-        null_ls.builtins.formatting.black,
-        null_ls.builtins.formatting.isort,
-        -- null_ls.builtins.formatting.autopep8,
-        -- null_ls.builtins.formatting.yapf.with({
-        --     runtime_condition = function(params)
-        --         local ranged = is_range_formatting
-        --         is_range_formatting = false
-        --         return ranged
-        --     end,
-        -- }),
-        -- null_ls.builtins.diagnostics.mypy,
-        -- null_ls.builtins.diagnostics.pylint,
-        -- null_ls.builtins.formatting.djhtml,
-        -- null_ls.builtins.formatting.djlint,
-    },
-})
-
 -- null_ls.server_capabilities.documentFormattingProvider = false
-
--- Setup LSP
-
-vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, opts)
-vim.keymap.set("n", "gp", vim.diagnostic.goto_prev, opts)
-vim.keymap.set("n", "gn", vim.diagnostic.goto_next, opts)
-vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, opts)
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
@@ -233,12 +159,28 @@ local lsp_flags = {
     -- This is the default in Nvim 0.7+
     debounce_text_changes = 150,
 }
-require("lspconfig")["pyright"].setup({
-    on_attach = on_attach,
-    flags = lsp_flags,
-    capabilities = capabilities,
-})
-require("lspconfig")["tsserver"].setup({
+require('lspconfig').ruff_lsp.setup {
+    init_options = {
+        settings = {
+            -- ...
+        },
+    },
+}
+require('lspconfig').pyright.setup {
+    settings = {
+        pyright = {
+            disableOrganizeImports = true, -- Using Ruff
+        },
+        python = {
+            analysis = {
+                ignore = { '*' }, -- Using Ruff
+                typeCheckingMode = 'off', -- Using mypy
+            },
+        },
+    },
+}
+
+require("lspconfig")["ts_ls"].setup({
     on_attach = on_attach,
     flags = lsp_flags,
     capabilities = capabilities,
@@ -262,6 +204,11 @@ require("lspconfig").lua_ls.setup({
             },
         },
     },
+    capabilities = capabilities,
+})
+require("lspconfig")["gopls"].setup({
+    on_attach = on_attach,
+    flags = lsp_flags,
     capabilities = capabilities,
 })
 
@@ -478,9 +425,6 @@ require("gitsigns").setup({
         row = 0,
         col = 1,
     },
-    yadm = {
-        enable = false,
-    },
 })
 
 -- Greeter
@@ -569,22 +513,10 @@ vim.cmd([[
     autocmd FileType alpha setlocal nofoldenable
 ]])
 
-function FormatFunction()
-    is_range_formatting = true
-    vim.lsp.buf.format({
-        async = true,
-        range = {
-            ["start"] = vim.api.nvim_buf_get_mark(0, "<"),
-            ["end"] = vim.api.nvim_buf_get_mark(0, ">"),
-        },
-    })
-end
-
 function ToggleCodespell()
     turn_on_codespell = not turn_on_codespell
 end
 
-vim.api.nvim_set_keymap("v", "<leader>ff", ":lua FormatFunction()<CR>", opts)
 vim.api.nvim_set_keymap("n", "<leader>fc", ":lua ToggleCodespell()<CR>", opts)
 
 require("telescope").load_extension("notify")
