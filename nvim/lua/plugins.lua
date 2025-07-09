@@ -1,134 +1,423 @@
 --
--- Setup plugins using Packer.
+-- Setup plugins using Lazy.nvim
 --
 
-local ensure_packer = function()
-    local fn = vim.fn
-    local install_path = fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
-    if fn.empty(fn.glob(install_path)) > 0 then
-        fn.system({ "git", "clone", "--depth", "1", "https://github.com/wbthomason/packer.nvim", install_path })
-        vim.cmd([[packadd packer.nvim]])
-        return true
+-- Bootstrap lazy.nvim
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+    local lazyrepo = "https://github.com/folke/lazy.nvim.git"
+    local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+    if vim.v.shell_error ~= 0 then
+        vim.api.nvim_echo({
+            { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
+            { out, "WarningMsg" },
+            { "\nPress any key to exit..." },
+        }, true, {})
+        vim.fn.getchar()
+        os.exit(1)
     end
-    return false
 end
+vim.opt.rtp:prepend(lazypath)
 
-local packer_bootstrap = ensure_packer()
+-- Setup lazy.nvim
+require("lazy").setup({
+    -- LSP Configuration
+    {
+        "neovim/nvim-lspconfig",
+        dependencies = {
+            "hrsh7th/cmp-nvim-lsp",
+        },
+        config = function()
+            require("config.lsp").setup()
+        end,
+    },
+    -- Mason: manages external editor tooling (LSP, DAP, linters, formatters)
+    {
+        "williamboman/mason.nvim",
+        dependencies = {
+            "neovim/nvim-lspconfig",
+        },
+        config = function()
+            require("mason").setup()
+        end,
+    },
+    {
+        "williamboman/mason-lspconfig.nvim",
+        dependencies = {
+            "williamboman/mason.nvim",
+            "neovim/nvim-lspconfig",
+        },
+        config = function()
+            require("mason-lspconfig").setup({
+                ensure_installed = {
+                    "lua_ls",
+                    "rust_analyzer",
+                    "pyright",
+                    "ruff",
+                },
+            })
+        end,
+    },
 
-local configuration = function(use)
-    use("wbthomason/packer.nvim") -- Packer can manage itself
-
-    -- manages external editor tooling (LSP, DAP, linters, formatters)
-    use({ "williamboman/mason.nvim" })
-    use({ "williamboman/mason-lspconfig.nvim" })
-
-    -- Linting & Formatting.
-    use({
+    -- Linting & Formatting
+    {
         "nvimtools/none-ls.nvim",
-        requires = { "nvim-lua/plenary.nvim" },
-    })
+        dependencies = { "nvim-lua/plenary.nvim" },
+    },
+    {
+        "jay-babu/mason-null-ls.nvim",
+        dependencies = { "williamboman/mason.nvim", "nvimtools/none-ls.nvim" },
+    },
 
-    use("neovim/nvim-lspconfig")    -- Configurations for nvim LSP
-    use("hrsh7th/nvim-cmp")         -- Autocompletion plugin
-    use("hrsh7th/cmp-nvim-lsp")     -- LSP source for nvim-cmp
-    use("mfussenegger/nvim-dap")    -- Debugger
-    use("saadparwaiz1/cmp_luasnip") -- Snippets source for nvim-cmp
-    use("L3MON4D3/LuaSnip")         -- Snippets plugin
-    use("rstacruz/vim-closer")      -- Closes brackets.
+    -- Autocompletion
+    "hrsh7th/nvim-cmp",
+    "hrsh7th/cmp-nvim-lsp",
+    "saadparwaiz1/cmp_luasnip",
 
-    -- Indentation guides.
-    use("lukas-reineke/indent-blankline.nvim")
+    -- Snippets
+    "L3MON4D3/LuaSnip",
 
-    -- Matches begin/close of many languages.
-    -- e.g. if/fi in bash, function/end in lua, etc.
-    use({
+    -- Debugger
+    "mfussenegger/nvim-dap",
+
+    -- Auto-close brackets
+    "rstacruz/vim-closer",
+
+    -- Indentation guides
+    {
+        "lukas-reineke/indent-blankline.nvim",
+        main = "ibl",
+        opts = {},
+    },
+
+    -- Enhanced matching
+    {
         "andymass/vim-matchup",
-        setup = function()
+        init = function()
             vim.g.matchup_matchparen_offscreen = { method = "popup" }
         end,
-    })
+    },
 
-    -- View Markdown edits real time.
-    use({
-        "iamcco/markdown-preview.nvim",
-        run = "cd app && npm install",
-        setup = function()
-            vim.g.mkdp_filetypes = { "markdown" }
+    -- Treesitter
+    {
+        "nvim-treesitter/nvim-treesitter",
+        build = ":TSUpdate",
+        config = function()
+            require("nvim-treesitter.configs").setup({
+                ensure_installed = {
+                    "bash",
+                    "lua",
+                    "markdown",
+                    "python",
+                    "rust",
+                },
+                sync_install = false,
+                auto_install = true,
+                highlight = {
+                    enable = true,
+                    disable = function(lang, buf)
+                        local max_filesize = 1024 * 1024 -- 1 MB
+                        local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+                        if ok and stats and stats.size > max_filesize then
+                            return true
+                        end
+                    end,
+                    additional_vim_regex_highlighting = false,
+                },
+            })
         end,
-        ft = { "markdown" },
-    })
+    },
 
-    -- Treesitter.
-    use({ "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" })
-
-    -- File explorer.
-    use({
+    -- File explorer
+    {
         "nvim-tree/nvim-tree.lua",
-        requires = {
-            "nvim-tree/nvim-web-devicons",
-        },
-        tag = "nightly",
-    })
+        dependencies = { "nvim-tree/nvim-web-devicons" },
+        config = function()
+            -- disable netrw at the very start of your init.lua (strongly advised)
+            vim.g.loaded_netrw = 1
+            vim.g.loaded_netrwPlugin = 1
 
-    -- Replacement for UI for messages, cmdline & popup.
-    use({
-        "folke/noice.nvim",
-        requires = {
-            "MunifTanjim/nui.nvim",
-            "rcarriga/nvim-notify",
-        },
-    })
+            -- set termguicolors to enable highlight groups
+            vim.opt.termguicolors = true
 
-    -- Fuzzy search
-    use({
+            require("nvim-tree").setup({
+                sort_by = "case_sensitive",
+                view = {
+                    width = 30,
+                },
+                renderer = {
+                    group_empty = true,
+                    highlight_git = false,
+                },
+                filters = {
+                    dotfiles = false,
+                },
+                on_attach = function(bufnr)
+                    local api = require("nvim-tree.api")
+
+                    local function opts(desc)
+                        return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+                    end
+
+                    -- Default mappings
+                    api.config.mappings.default_on_attach(bufnr)
+
+                    -- Custom mappings
+                    vim.keymap.set('n', 'u', api.tree.change_root_to_parent, opts('Up'))
+                    vim.keymap.set('n', '<C-e>', '', opts(''))
+                end,
+            })
+        end,
+    },
+
+    -- Fuzzy finder
+    {
         "nvim-telescope/telescope.nvim",
         tag = "0.1.4",
-        requires = { { "nvim-lua/plenary.nvim" } },
-    })
-
-    -- Sleak CMD line at the bottom.
-    use({
-        "nvim-lualine/lualine.nvim",
-        requires = { "kyazdani42/nvim-web-devicons", opt = true },
-    })
-
-    -- Git
-    use({ "tpope/vim-fugitive" })
-    use({ "lewis6991/gitsigns.nvim" })
-
-    -- A greeter.
-    use({
-        "goolord/alpha-nvim",
-        requires = { "BlakeJC94/alpha-nvim-fortune" },
+        dependencies = { "nvim-lua/plenary.nvim" },
         config = function()
-            require("alpha").setup(require("alpha.themes.dashboard").config)
-        end,
-    })
+            local builtin = require("telescope.builtin")
 
-    -- Themes
-    use({ "EdenEast/nightfox.nvim" })
+            vim.keymap.set("n", "<leader>;", builtin.find_files, {})
+            vim.keymap.set("n", "<leader>'", builtin.live_grep, {})
+            vim.keymap.set("n", "<leader>fb", builtin.buffers, {})
+            vim.keymap.set("n", "<leader>fh", builtin.help_tags, {})
+            vim.keymap.set("n", "gr", builtin.lsp_references, {})
+            vim.keymap.set("n", "gd", builtin.lsp_definitions, {})
+            vim.keymap.set("n", "gD", builtin.lsp_type_definitions, {})
+            vim.keymap.set("n", "gi", builtin.lsp_implementations, {})
+            vim.keymap.set("n", "gs", builtin.lsp_dynamic_workspace_symbols, {})
+            vim.keymap.set("n", "gS", builtin.lsp_workspace_symbols, {})
+        end,
+    },
+
+    -- Status line
+    {
+        "nvim-lualine/lualine.nvim",
+        dependencies = { "nvim-tree/nvim-web-devicons" },
+        config = function()
+            require("lualine").setup({
+                options = {
+                    icons_enabled = true,
+                    theme = "nightfox",
+                    component_separators = { left = "", right = "" },
+                    section_separators = { left = "", right = "" },
+                    disabled_filetypes = {
+                        statusline = {},
+                        winbar = {},
+                    },
+                    ignore_focus = {},
+                    always_divide_middle = true,
+                    globalstatus = false,
+                    refresh = {
+                        statusline = 1000,
+                        tabline = 1000,
+                        winbar = 1000,
+                    },
+                },
+                sections = {
+                    lualine_a = { "mode" },
+                    lualine_b = { "branch", "diff", "diagnostics" },
+                    lualine_c = { "filename" },
+                    lualine_x = { "encoding", "fileformat", "filetype" },
+                    lualine_y = { "progress" },
+                    lualine_z = { "location" },
+                },
+                inactive_sections = {
+                    lualine_a = {},
+                    lualine_b = {},
+                    lualine_c = { "filename" },
+                    lualine_x = { "location" },
+                    lualine_y = {},
+                    lualine_z = {},
+                },
+                tabline = {},
+                winbar = {},
+                inactive_winbar = {},
+                extensions = {},
+            })
+        end,
+    },
+
+    -- Git integration
+    "tpope/vim-fugitive",
+    {
+        "lewis6991/gitsigns.nvim",
+        dependencies = { "nvim-lua/plenary.nvim" },
+        config = function()
+            require("gitsigns").setup({
+                signs = {
+                    add = { text = "│" },
+                    change = { text = "│" },
+                    delete = { text = "_" },
+                    topdelete = { text = "‾" },
+                    changedelete = { text = "~" },
+                    untracked = { text = "┆" },
+                },
+                signcolumn = true,
+                numhl = false,
+                linehl = false,
+                word_diff = false,
+                watch_gitdir = {
+                    interval = 1000,
+                    follow_files = true,
+                },
+                attach_to_untracked = true,
+                current_line_blame = false,
+                current_line_blame_opts = {
+                    virt_text = true,
+                    virt_text_pos = "eol",
+                    delay = 1000,
+                    ignore_whitespace = false,
+                },
+                current_line_blame_formatter = "<author>, <author_time:%Y-%m-%d> - <summary>",
+                sign_priority = 6,
+                update_debounce = 100,
+                status_formatter = nil,
+                max_file_length = 40000,
+                preview_config = {
+                    border = "single",
+                    style = "minimal",
+                    relative = "cursor",
+                    row = 0,
+                    col = 1,
+                },
+            })
+        end,
+    },
+
+    -- Greeter/Dashboard
+    {
+        "goolord/alpha-nvim",
+        dependencies = { "BlakeJC94/alpha-nvim-fortune" },
+        config = function()
+            local alpha = require("alpha")
+            local dashboard = require("alpha.themes.dashboard")
+
+            local splash_screen_banners = {
+                {
+                    "      ███╗   ███╗ █████╗  ██████╗ ██╗ ██████╗      ",
+                    "      ████╗ ████║██╔══██╗██╔════╝ ██║██╔════╝      ",
+                    "      ██╔████╔██║███████║██║  ███╗██║██║           ",
+                    "      ██║╚██╔╝██║██╔══██║██║   ██║██║██║           ",
+                    "      ██║ ╚═╝ ██║██║  ██║╚██████╔╝██║╚██████╗      ",
+                    "      ╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝ ╚═════╝      ",
+                    "                                                   ",
+                    " ██████╗ █████╗ ███╗   ██╗██╗   ██╗ █████╗ ███████╗",
+                    "██╔════╝██╔══██╗████╗  ██║██║   ██║██╔══██╗██╔════╝",
+                    "██║     ███████║██╔██╗ ██║██║   ██║███████║███████╗",
+                    "██║     ██╔══██║██║╚██╗██║╚██╗ ██╔╝██╔══██║╚════██║",
+                    "╚██████╗██║  ██║██║ ╚████║ ╚████╔╝ ██║  ██║███████║",
+                    " ╚═════╝╚═╝  ╚═╝╚═╝  ╚═══╝  ╚═══╝  ╚═╝  ╚═╝╚══════╝",
+                },
+                {
+                    "▄█▄    ████▄ ██▄   ▄███▄       █    ▄█ █  █▀ ▄███▄     ",
+                    "█▀ ▀▄  █   █ █  █  █▀   ▀      █    ██ █▄█   █▀   ▀    ",
+                    "█   ▀  █   █ █   █ ██▄▄        █    ██ █▀▄   ██▄▄      ",
+                    "█▄  ▄▀ ▀████ █  █  █▄   ▄▀     ███▄ ▐█ █  █  █▄   ▄▀   ",
+                    "▀███▀        ███▀  ▀███▀           ▀ ▐   █   ▀███▀     ",
+                    "                                        ▀              ",
+                    "                                                       ",
+                    "   ▄▄▄▄▀ ▄  █ ▄███▄       ██▄   ▄███▄      ▄   ▄█ █    ",
+                    "▀▀▀ █   █   █ █▀   ▀      █  █  █▀   ▀      █  ██ █    ",
+                    "    █   ██▀▀█ ██▄▄        █   █ ██▄▄   █     █ ██ █    ",
+                    "   █    █   █ █▄   ▄▀     █  █  █▄   ▄▀ █    █ ▐█ ███▄ ",
+                    "  ▀        █  ▀███▀       ███▀  ▀███▀    █  █   ▐     ▀",
+                    "          ▀                               █▐           ",
+                    "                                          ▐            ",
+                },
+                {
+                    " ███▄    █  ▒█████     ▓█████   ██████  ▄████▄   ▄▄▄       ██▓███  ▓█████ ",
+                    " ██ ▀█   █ ▒██▒  ██▒   ▓█   ▀ ▒██    ▒ ▒██▀ ▀█  ▒████▄    ▓██░  ██▒▓█   ▀ ",
+                    "▓██  ▀█ ██▒▒██░  ██▒   ▒███   ░ ▓██▄   ▒▓█    ▄ ▒██  ▀█▄  ▓██░ ██▓▒▒███   ",
+                    "▓██▒  ▐▌██▒▒██   ██░   ▒▓█  ▄   ▒   ██▒▒▓▓▄ ▄██▒░██▄▄▄▄██ ▒██▄█▓▒ ▒▒▓█  ▄ ",
+                    "▒██░   ▓██░░ ████▓▒░   ░▒████▒▒██████▒▒▒ ▓███▀ ░ ▓█   ▓██▒▒██▒ ░  ░░▒████▒",
+                    "░ ▒░   ▒ ▒ ░ ▒░▒░▒░    ░░ ▒░ ░▒ ▒▓▒ ▒ ░░ ░▒ ▒  ░ ▒▒   ▓▒█░▒▓▒░ ░  ░░░ ▒░ ░",
+                    "░ ░░   ░ ▒░  ░ ▒ ▒░     ░ ░  ░░ ░▒  ░ ░  ░  ▒     ▒   ▒▒ ░░▒ ░      ░ ░  ░",
+                    "   ░   ░ ░ ░ ░ ░ ▒        ░   ░  ░  ░  ░          ░   ▒   ░░          ░   ",
+                    "         ░     ░ ░        ░  ░      ░  ░ ░            ░  ░            ░  ░",
+                    "                                       ░                                  ",
+                    "      █████▒██▀███   ▒█████   ███▄ ▄███▓    ██▒   █▓ ██▓ ███▄ ▄███▓       ",
+                    "    ▓██   ▒▓██ ▒ ██▒▒██▒  ██▒▓██▒▀█▀ ██▒   ▓██░   █▒▓██▒▓██▒▀█▀ ██▒       ",
+                    "    ▒████ ░▓██ ░▄█ ▒▒██░  ██▒▓██    ▓██░    ▓██  █▒░▒██▒▓██    ▓██░       ",
+                    "    ░▓█▒  ░▒██▀▀█▄  ▒██   ██░▒██    ▒██      ▒██ █░░░██░▒██    ▒██        ",
+                    "    ░▒█░   ░██▓ ▒██▒░ ████▓▒░▒██▒   ░██▒      ▒▀█░  ░██░▒██▒   ░██▒       ",
+                    "     ▒ ░   ░ ▒▓ ░▒▓░░ ▒░▒░▒░ ░ ▒░   ░  ░      ░ ▐░  ░▓  ░ ▒░   ░  ░       ",
+                    "     ░       ░▒ ░ ▒░  ░ ▒ ▒░ ░  ░      ░      ░ ░░   ▒ ░░  ░      ░       ",
+                    "     ░ ░     ░░   ░ ░ ░ ░ ▒  ░      ░           ░░   ▒ ░░      ░          ",
+                    "              ░         ░ ░         ░            ░   ░         ░          ",
+                    "                                                ░                         ",
+                },
+            }
+
+            -- Set header
+            dashboard.section.header.val = splash_screen_banners[math.random(1, #splash_screen_banners)]
+
+            -- Set menu
+            dashboard.section.buttons.val = {
+                dashboard.button("e", "  > New file", ":ene <BAR> startinsert <CR>"),
+                dashboard.button("f", "  > Find file", ":cd $HOME/projects | Telescope find_files<CR>"),
+                dashboard.button("r", "  > Recent", ":Telescope oldfiles<CR>"),
+                dashboard.button("w", "  > Wiki", ":e ~/vimwiki/index.wiki<CR>"),
+                dashboard.button("s", "  > Settings", ":e $MYVIMRC | :cd %:p:h | split . | wincmd k | pwd<CR>"),
+                dashboard.button("q", "  > Quit NVIM", ":qa<CR>"),
+            }
+
+            local fortune = require("alpha.fortune")
+            dashboard.section.footer.val = fortune()
+
+            -- Send config to alpha
+            alpha.setup(dashboard.opts)
+
+            -- Disable folding on alpha buffer
+            vim.cmd([[
+                autocmd FileType alpha setlocal nofoldenable
+            ]])
+        end,
+    },
+
+    -- Theme
+    {
+        "EdenEast/nightfox.nvim",
+        config = function()
+            require("nightfox").setup({
+                options = {
+                    transparent = true,
+                    terminal_colors = true,
+                    dim_inactive = false,
+                },
+            })
+
+            vim.cmd("colorscheme nightfox")
+        end,
+    },
 
     -- Comments
-    use({
+    {
         "numToStr/Comment.nvim",
-        config = function()
-            require("Comment").setup()
-        end,
-    })
+        opts = {},
+    },
 
-    -- vimwiki
-    use({ "vimwiki/vimwiki" })
+    -- Vimwiki
+    "vimwiki/vimwiki",
 
-    -- Automatically set up your configuration after cloning packer.nvim
-    -- Put this at the end after all plugins
-    if packer_bootstrap then
-        require("packer").sync()
-    end
-
-    use({ "ThePrimeagen/vim-be-good" })
-    -- use({ "github/copilot.vim" })
-    use({ "mbbill/undotree" })
-    use({ "jay-babu/mason-null-ls.nvim" })
-end
-
-return require("packer").startup(configuration)
+    -- Additional plugins
+    "ThePrimeagen/vim-be-good",
+    "mbbill/undotree",
+}, {
+    -- Lazy.nvim configuration options
+    ui = {
+        border = "rounded",
+    },
+    performance = {
+        rtp = {
+            disabled_plugins = {
+                "gzip",
+                "tarPlugin",
+                "tohtml",
+                "tutor",
+                "zipPlugin",
+            },
+        },
+    },
+})

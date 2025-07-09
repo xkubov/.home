@@ -1,0 +1,147 @@
+-- LSP Configuration
+
+local M = {}
+
+-- Setup LSP on_attach function
+local on_attach = function(_, bufnr)
+    -- Enable completion triggered by <c-x><c-o>
+    vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
+
+    -- Mappings.
+    -- See `:help vim.lsp.*` for documentation on any of the below functions
+    local bufopts = { noremap = true, silent = true, buffer = bufnr }
+    vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
+    vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
+    vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
+    vim.keymap.set("n", "gi", vim.lsp.buf.implementation, bufopts)
+    vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, bufopts)
+    vim.keymap.set("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, bufopts)
+    vim.keymap.set("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, bufopts)
+    vim.keymap.set("n", "<leader>wl", function()
+        print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+    end, bufopts)
+    vim.keymap.set("n", "<leader>D", vim.lsp.buf.type_definition, bufopts)
+    vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, bufopts)
+    vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, bufopts)
+    vim.keymap.set("n", "<leader>f", function()
+        vim.lsp.buf.format({ async = true })
+    end, bufopts)
+end
+
+-- Setup LSP capabilities
+local capabilities = require("cmp_nvim_lsp").default_capabilities()
+
+local lsp_flags = {
+    -- This is the default in Nvim 0.7+
+    debounce_text_changes = 150,
+}
+
+function M.setup()
+    -- Configure specific language servers
+    require('lspconfig').ruff.setup {
+        on_attach = on_attach,
+        capabilities = capabilities,
+        flags = lsp_flags,
+        init_options = {
+            settings = {
+                -- Custom ruff settings if needed
+            },
+        },
+    }
+
+    require('lspconfig').pyright.setup {
+        on_attach = on_attach,
+        capabilities = capabilities,
+        flags = lsp_flags,
+        settings = {
+            pyright = {
+                disableOrganizeImports = true, -- Using Ruff
+            },
+            python = {
+                analysis = {
+                    ignore = { '*' }, -- Using Ruff
+                    typeCheckingMode = 'off', -- Using mypy
+                },
+            },
+        },
+    }
+
+    require("lspconfig")["ts_ls"].setup({
+        on_attach = on_attach,
+        flags = lsp_flags,
+        capabilities = capabilities,
+    })
+
+    require("lspconfig")["rust_analyzer"].setup({
+        on_attach = on_attach,
+        flags = lsp_flags,
+        settings = {
+            ["rust-analyzer"] = {},
+        },
+        capabilities = capabilities,
+    })
+
+    require("lspconfig").lua_ls.setup({
+        on_attach = on_attach,
+        flags = lsp_flags,
+        settings = {
+            Lua = {
+                diagnostics = {
+                    globals = { "vim" },
+                },
+            },
+        },
+        capabilities = capabilities,
+    })
+
+    require("lspconfig")["gopls"].setup({
+        on_attach = on_attach,
+        flags = lsp_flags,
+        capabilities = capabilities,
+    })
+
+    -- Setup autocompletion
+    local luasnip = require("luasnip")
+    local cmp = require("cmp")
+
+    cmp.setup({
+        snippet = {
+            expand = function(args)
+                luasnip.lsp_expand(args.body)
+            end,
+        },
+        mapping = cmp.mapping.preset.insert({
+            ["<C-u>"] = cmp.mapping.scroll_docs(-4), -- Up
+            ["<C-d>"] = cmp.mapping.scroll_docs(4),  -- Down
+            ["<C-q>"] = cmp.mapping.complete(),
+            ["<CR>"] = cmp.mapping.confirm({
+                behavior = cmp.ConfirmBehavior.Replace,
+                select = true,
+            }),
+            ["<Tab>"] = cmp.mapping(function(fallback)
+                if cmp.visible() then
+                    cmp.select_next_item()
+                elseif luasnip.expand_or_jumpable() then
+                    luasnip.expand_or_jump()
+                else
+                    fallback()
+                end
+            end, { "i", "s" }),
+            ["<S-Tab>"] = cmp.mapping(function(fallback)
+                if cmp.visible() then
+                    cmp.select_prev_item()
+                elseif luasnip.jumpable(-1) then
+                    luasnip.jump(-1)
+                else
+                    fallback()
+                end
+            end, { "i", "s" }),
+        }),
+        sources = {
+            { name = "nvim_lsp" },
+            { name = "luasnip", option = { show_autosnipets = true } },
+        },
+    })
+end
+
+return M
