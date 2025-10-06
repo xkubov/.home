@@ -26,6 +26,39 @@ local on_attach = function(_, bufnr)
     vim.keymap.set("n", "<leader>f", function()
         vim.lsp.buf.format({ async = true })
     end, bufopts)
+    
+    -- Debug LSP info (add these diagnostic keymaps)
+    vim.keymap.set("n", "<leader>li", function()
+        local clients = vim.lsp.get_active_clients({ bufnr = 0 })
+        local info = {}
+        table.insert(info, "=== Active LSP Clients ===")
+        
+        for _, client in ipairs(clients) do
+            table.insert(info, "Client: " .. client.name)
+            table.insert(info, "  • Definition: " .. tostring(client.server_capabilities.definitionProvider or false))
+            table.insert(info, "  • Hover: " .. tostring(client.server_capabilities.hoverProvider or false))
+            table.insert(info, "  • References: " .. tostring(client.server_capabilities.referencesProvider or false))
+            table.insert(info, "")
+        end
+        
+        -- Show in a buffer instead of printing
+        local buf = vim.api.nvim_create_buf(false, true)
+        vim.api.nvim_buf_set_lines(buf, 0, -1, false, info)
+        vim.api.nvim_buf_set_option(buf, 'buftype', 'nofile')
+        vim.api.nvim_buf_set_option(buf, 'bufhidden', 'wipe')
+        vim.api.nvim_open_win(buf, true, {
+            relative = 'editor',
+            width = 50,
+            height = #info + 2,
+            col = 10,
+            row = 5,
+            style = 'minimal',
+            border = 'rounded',
+            title = 'LSP Info'
+        })
+    end, { desc = "LSP Info" })
+    
+    vim.keymap.set("n", "<leader>lr", ":LspRestart<CR>", { desc = "Restart LSP" })
 end
 
 -- Setup LSP capabilities
@@ -44,7 +77,13 @@ function M.setup()
         flags = lsp_flags,
         init_options = {
             settings = {
-                -- Custom ruff settings if needed
+                -- Enable ruff formatting and linting only
+                format = {
+                    enabled = true,
+                },
+                lint = {
+                    enabled = true,
+                },
             },
         },
     }
@@ -55,12 +94,17 @@ function M.setup()
         flags = lsp_flags,
         settings = {
             pyright = {
-                disableOrganizeImports = true, -- Using Ruff
+                disableOrganizeImports = true, -- Using Ruff for import organization
             },
             python = {
                 analysis = {
-                    ignore = { '*' }, -- Using Ruff
-                    typeCheckingMode = 'off', -- Using mypy
+                    typeCheckingMode = 'basic', -- Enable Pyright type checking
+                    autoSearchPaths = true,
+                    useLibraryCodeForTypes = true,
+                    autoImportCompletions = true,
+                    diagnosticMode = "workspace",
+                    stubPath = vim.fn.stdpath("data") .. "/lazy/python-type-stubs",
+                    reportMissingTypeStubs = false,
                 },
             },
         },
@@ -98,6 +142,14 @@ function M.setup()
         on_attach = on_attach,
         flags = lsp_flags,
         capabilities = capabilities,
+    })
+
+    -- Setup format on save for Python files (using ruff)
+    vim.api.nvim_create_autocmd("BufWritePre", {
+        pattern = "*.py",
+        callback = function()
+            vim.lsp.buf.format({ async = false })
+        end,
     })
 
     -- Setup autocompletion

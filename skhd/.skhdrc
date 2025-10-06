@@ -71,3 +71,6 @@ alt - t : yabai -m window --toggle float; yabai -m window --toggle border
 # Make window native fullscreen
 alt - f         : yabai -m window --toggle zoom-fullscreen
 shift + alt - f : yabai -m window --toggle native-fullscreen
+
+alt + cmd - q : pydev toggl start -d "placeholder" -k c47eeaf9da4e716a7e475d871d9fa86d >> /Users/kubov/out
+alt + cmd - a : pydev toggl stop -k c47eeaf9da4e716a7e475d871d9fa86d >> /Users/kubov/out

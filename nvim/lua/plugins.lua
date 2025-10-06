@@ -63,10 +63,30 @@ require("lazy").setup({
     {
         "nvimtools/none-ls.nvim",
         dependencies = { "nvim-lua/plenary.nvim" },
+        config = function()
+            local null_ls = require("null-ls")
+
+            null_ls.setup({
+                sources = {
+                    -- Add other sources here for different languages as needed
+                    -- null_ls.builtins.formatting.prettier, -- for JS/TS
+                    -- null_ls.builtins.diagnostics.eslint,  -- for JS/TS
+                },
+                -- Note: Format on save is already configured in LSP setup for Python files
+            })
+        end,
     },
     {
         "jay-babu/mason-null-ls.nvim",
         dependencies = { "williamboman/mason.nvim", "nvimtools/none-ls.nvim" },
+        config = function()
+            require("mason-null-ls").setup({
+                ensure_installed = {
+                    "pyright",
+                },
+                automatic_installation = true,
+            })
+        end,
     },
 
     -- Autocompletion

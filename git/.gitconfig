@@ -25,10 +25,10 @@
 	name = Peter Kubov
 	email = peter.kubov@skippay.cz
 
-[color]
-	ui = always
-	branch = always
-	status = always
+# [color]
+# 	ui = always
+# 	branch = always
+# 	status = always
 
 [grep]
 	linenumber = true
@@ -103,7 +103,8 @@
 
 	# cherry-pick
 	cp = cherry-pick
-	cpa = check-pick --abort
+	cpa = cp --abort
+    cpc = cp --continue
 
 	# check
 	ckw = !git diff-tree --check $(git hash-object -t tree /dev/null) HEAD
@@ -112,6 +113,7 @@
 	f = fetch
 	fu = fetch upstream
 	fd = fetch devel
+    ff = fetch --force --tags
 
 	# shows a nice tree of the whole repository
 	l = log
@@ -153,14 +155,14 @@
 	rsth = reset HEAD~
 
 	# removes new files in repository
-	rmn = !git shn | xargs rm
+	rmn = !git lin | xargs rm
 
 	# status shortcuts
 	s = status
 
 	sh = show
 
-	# plumbing wat
+	# plumbing way
 	# shm = !git diff-tree --no-commit-id --name-only -r $(test -z "$1" && echo HEAD || echo $1) && true
 
 	# porcelain way
@@ -180,8 +182,8 @@
 	stc = stash clear
 	stsd = !git st && git std
 	stsc = !git st && git stc
+
 	t = tag
 	td = tag -d
+
 	count-lines = "! git log --author=\"$1\" --pretty=tformat: --numstat | awk '{ add += $1; subs += $2; loc += $1 - $2 } END { printf \"added lines: %s, removed lines: %s, total lines: %s\\n\", add, subs, loc }' #"
-[safe]
-	directory = /home/devel/devel

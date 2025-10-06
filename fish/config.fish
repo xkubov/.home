@@ -40,15 +40,21 @@ set -q PATH; or set PATH ''; set -gx PATH "/opt/homebrew/bin" "/opt/homebrew/sbi
 set -q MANPATH; or set MANPATH ''; set -gx MANPATH "/opt/homebrew/share/man" $MANPATH;
 set -q INFOPATH; or set INFOPATH ''; set -gx INFOPATH "/opt/homebrew/share/info" $INFOPATH;
 
+set -x PATH /Users/kubov/.local/bin $PATH
+
 if status is-interactive
     # Commands to run in interactive sessions can go here
 end
 
-alias ls "exa --icons"
+alias ls "eza --icons"
 alias python python3
 alias vim nvim
 
 # starship init fish | source
 set -Ux PYENV_ROOT $HOME/.pyenv
 set -U fish_user_paths $PYENV_ROOT/bin $fish_user_paths
+
+abbr v vim
+abbr g git
+
 pyenv init - | source
