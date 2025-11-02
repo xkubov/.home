@@ -73,7 +73,6 @@ source "$ITEM_DIR/battery.sh"
 source "$ITEM_DIR/volume.sh"
 
 # Center
-source "$ITEM_DIR/github.sh"
 source "$ITEM_DIR/crypto.sh"
 source "$ITEM_DIR/cpu.sh"
 
