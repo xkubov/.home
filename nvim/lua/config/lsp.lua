@@ -5,7 +5,7 @@ local M = {}
 -- Setup LSP on_attach function
 local on_attach = function(_, bufnr)
     -- Enable completion triggered by <c-x><c-o>
-    vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
+    vim.bo[bufnr].omnifunc = "v:lua.vim.lsp.omnifunc"
 
     -- Mappings.
     -- See `:help vim.lsp.*` for documentation on any of the below functions
@@ -29,7 +29,7 @@ local on_attach = function(_, bufnr)
     
     -- Debug LSP info (add these diagnostic keymaps)
     vim.keymap.set("n", "<leader>li", function()
-        local clients = vim.lsp.get_active_clients({ bufnr = 0 })
+        local clients = vim.lsp.get_clients({ bufnr = 0 })
         local info = {}
         table.insert(info, "=== Active LSP Clients ===")
         
@@ -44,8 +44,8 @@ local on_attach = function(_, bufnr)
         -- Show in a buffer instead of printing
         local buf = vim.api.nvim_create_buf(false, true)
         vim.api.nvim_buf_set_lines(buf, 0, -1, false, info)
-        vim.api.nvim_buf_set_option(buf, 'buftype', 'nofile')
-        vim.api.nvim_buf_set_option(buf, 'bufhidden', 'wipe')
+        vim.bo[buf].buftype = 'nofile'
+        vim.bo[buf].bufhidden = 'wipe'
         vim.api.nvim_open_win(buf, true, {
             relative = 'editor',
             width = 50,
@@ -56,9 +56,9 @@ local on_attach = function(_, bufnr)
             border = 'rounded',
             title = 'LSP Info'
         })
-    end, { desc = "LSP Info" })
-    
-    vim.keymap.set("n", "<leader>lr", ":LspRestart<CR>", { desc = "Restart LSP" })
+    end, { desc = "LSP Info", buffer = bufnr })
+
+    vim.keymap.set("n", "<leader>lr", ":LspRestart<CR>", { desc = "Restart LSP", buffer = bufnr })
 end
 
 -- Setup LSP capabilities
