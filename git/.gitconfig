@@ -1,5 +1,5 @@
 [include]
-    path = /Users/kubov/.config/delta/themes.gitconfig
+    path = ~/.config/delta/themes.gitconfig
 
 [core]
 	editor = nvim
@@ -23,7 +23,7 @@
 
 [user]
 	name = Peter Kubov
-	email = peter.kubov@skippay.cz
+	email = petekubo@amazon.cz
 
 # [color]
 # 	ui = always
