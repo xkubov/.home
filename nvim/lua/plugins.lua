@@ -33,7 +33,7 @@ require("lazy").setup({
     },
     -- Mason: manages external editor tooling (LSP, DAP, linters, formatters)
     {
-        "williamboman/mason.nvim",
+        "mason-org/mason.nvim",
         dependencies = {
             "neovim/nvim-lspconfig",
         },
@@ -42,18 +42,22 @@ require("lazy").setup({
         end,
     },
     {
-        "williamboman/mason-lspconfig.nvim",
+        "mason-org/mason-lspconfig.nvim",
         dependencies = {
-            "williamboman/mason.nvim",
+            "mason-org/mason.nvim",
             "neovim/nvim-lspconfig",
         },
         config = function()
             require("mason-lspconfig").setup({
+                -- Keep in sync with the servers configured in lua/config/lsp.lua;
+                -- mason only installs, it does not configure.
                 ensure_installed = {
                     "lua_ls",
                     "rust_analyzer",
                     "pyright",
                     "ruff",
+                    "ts_ls",
+                    "gopls",
                 },
             })
         end,
