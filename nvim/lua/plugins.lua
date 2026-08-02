@@ -59,35 +59,7 @@ require("lazy").setup({
         end,
     },
 
-    -- Linting & Formatting
-    {
-        "nvimtools/none-ls.nvim",
-        dependencies = { "nvim-lua/plenary.nvim" },
-        config = function()
-            local null_ls = require("null-ls")
-
-            null_ls.setup({
-                sources = {
-                    -- Add other sources here for different languages as needed
-                    -- null_ls.builtins.formatting.prettier, -- for JS/TS
-                    -- null_ls.builtins.diagnostics.eslint,  -- for JS/TS
-                },
-                -- Note: Format on save is already configured in LSP setup for Python files
-            })
-        end,
-    },
-    {
-        "jay-babu/mason-null-ls.nvim",
-        dependencies = { "williamboman/mason.nvim", "nvimtools/none-ls.nvim" },
-        config = function()
-            require("mason-null-ls").setup({
-                ensure_installed = {
-                    "pyright",
-                },
-                automatic_installation = true,
-            })
-        end,
-    },
+    -- Formatting is handled by the LSP servers themselves (ruff for Python).
 
     -- Autocompletion
     "hrsh7th/nvim-cmp",
@@ -96,12 +68,6 @@ require("lazy").setup({
 
     -- Snippets
     "L3MON4D3/LuaSnip",
-
-    -- Debugger
-    "mfussenegger/nvim-dap",
-
-    -- Auto-close brackets
-    "rstacruz/vim-closer",
 
     -- Indentation guides
     {
@@ -422,7 +388,6 @@ require("lazy").setup({
     "vimwiki/vimwiki",
 
     -- Additional plugins
-    "ThePrimeagen/vim-be-good",
     "mbbill/undotree",
 }, {
     -- Lazy.nvim configuration options
