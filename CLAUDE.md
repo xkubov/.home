@@ -76,18 +76,19 @@ Audited for `git/.gitconfig` and `tmux/.tmux.conf`:
 Audited via the GitHub license API against the specs in `lua/plugins.lua`. **Nothing proprietary is currently declared**, but two entries need attention and several are copyleft — relevant if any config is ever shared into an employer context.
 
 **Proprietary — do not reintroduce:**
-- `github/copilot.vim` is licensed under the **GitHub Terms of Service**, not an open-source license ("All Rights Reserved"). It is **not** in `plugins.lua` — only a stale entry in `lazy-lock.json`. Removing that lock line is safe; the plugin is not installed. Do not re-add Copilot without checking employer policy on AI coding assistants.
+- `github/copilot.vim` is licensed under the **GitHub Terms of Service**, not an open-source license ("All Rights Reserved"). Already removed (it was a stale `lazy-lock.json` entry with no plugin spec). Do not re-add Copilot without checking employer policy on AI coding assistants.
 
 **No license at all (all rights reserved by default):**
-- `ThePrimeagen/vim-be-good` — no LICENSE file, no license statement in the README. Legally unredistributable, and it is only a vim-motions practice game. Best candidate for removal.
-- `tpope/vim-fugitive` — no LICENSE file, but `doc/fugitive.txt` states "License: Same terms as Vim itself", i.e. the **Vim License** (GPL-compatible, charityware). Fine to keep; the API just can't detect it.
+- `ThePrimeagen/vim-be-good` — no LICENSE file and no statement in the README. **Removed.**
+- `tpope/vim-fugitive` — no LICENSE file, but `doc/fugitive.txt` states "License: Same terms as Vim itself", i.e. the **Vim License** (GPL-compatible, charityware). Kept; the GitHub API just can't detect it. Don't "fix" this as unlicensed.
 
 **Copyleft (fine for personal use; note before redistributing this repo):**
-- GPL-3.0: `nvim-tree/nvim-tree.lua`, `mfussenegger/nvim-dap`, `BlakeJC94/alpha-nvim-fortune`
-- AGPL-3.0: `jay-babu/mason-null-ls.nvim` — strongest copyleft here, and this plugin is misconfigured (see below), so removing it is a double win.
+- GPL-3.0: `nvim-tree/nvim-tree.lua`, `BlakeJC94/alpha-nvim-fortune`
 - Vim License: `tpope/vim-fugitive`
 
-Everything else is permissive: MIT (`nvim-cmp`, `cmp-nvim-lsp`, `plenary`, `telescope`, `lualine`, `gitsigns`, `nightfox`, `Comment.nvim`, `indent-blankline`, `vim-matchup`, `vim-closer`, `nvim-web-devicons`, `alpha-nvim`, `vimwiki`), Apache-2.0 (`lazy.nvim`, `nvim-lspconfig`, `LuaSnip`, `cmp_luasnip`, `nvim-treesitter`, `mason`, `mason-lspconfig`), BSD-3-Clause (`undotree`), Unlicense (`none-ls`).
+Everything else is permissive: MIT (`nvim-cmp`, `cmp-nvim-lsp`, `plenary`, `telescope`, `lualine`, `gitsigns`, `nightfox`, `Comment.nvim`, `indent-blankline`, `vim-matchup`, `nvim-web-devicons`, `alpha-nvim`, `vimwiki`), Apache-2.0 (`lazy.nvim`, `nvim-lspconfig`, `LuaSnip`, `cmp_luasnip`, `nvim-treesitter`, `mason`, `mason-lspconfig`), BSD-3-Clause (`undotree`).
+
+When adding a plugin, check its license first — prefer permissive, and never add anything under a proprietary ToS.
 
 ## Neovim architecture
 
@@ -102,29 +103,32 @@ Everything else is permissive: MIT (`nvim-cmp`, `cmp-nvim-lsp`, `plenary`, `tele
 
 ### Adding an LSP server requires two edits
 
-`mason-lspconfig` here is configured **without** `handlers`/`setup_handlers`, so mason only *installs* — all real config lives in `lsp.lua`. Adding a server to `ensure_installed` alone does nothing.
+`mason-lspconfig` here is configured **without** `handlers`/`setup_handlers`, so mason only *installs* — all real config lives in `lsp.lua`. Adding a server to `ensure_installed` alone does nothing, and configuring one in `lsp.lua` alone means it never attaches unless the binary happens to be on `PATH`.
 
-The two lists already disagree: mason installs `lua_ls`, `rust_analyzer`, `pyright`, `ruff` (`plugins.lua:51-58`), but `lsp.lua` also configures `ts_ls` (:113) and `gopls` (:141). Those two are **not** mason-managed and must be on `PATH` (`typescript-language-server`, `gopls`) or they silently never attach.
+**Both lists must be edited together**: `ensure_installed` in `plugins.lua` and a `require('lspconfig').X.setup{}` block in `lsp.lua`. They are currently in sync at 6 servers — `lua_ls`, `rust_analyzer`, `pyright`, `ruff`, `ts_ls`, `gopls`. (`ts_ls` and `gopls` had been configured but not installed, so they silently never attached; fixed in `f3535d4`.) Note `gopls` is installed but only useful once a Go toolchain exists — none is installed on this machine.
 
 Python is deliberately split: **ruff** formats, lints, and owns import organization; **pyright** does type checking with `disableOrganizeImports = true` (`lsp.lua:97`). Format-on-save exists **only for `*.py`** (`lsp.lua:148-153`); everything else formats manually via `<leader>f`.
 
-### Known dead code and shadowed keymaps
+### Cleanups already applied — don't reintroduce
 
-Don't assume these work — verify before building on them:
+Removed in `8d2af1c` and `8410e5b`; if a future edit looks like it's adding these back, it's a regression:
 
-- **`<leader>fc` / `ToggleCodespell()` is a no-op.** `turn_on_codespell` (`init.lua:88-94`) is a file-local that nothing reads; there is no codespell source anywhere. Leftover from an older null-ls/ALE setup.
-- **none-ls is installed with `sources = {}`** (`plugins.lua:70-74`) — initialized but contributing zero diagnostics/formatters. Required under its legacy name `require("null-ls")`.
-- `mason-null-ls` has `ensure_installed = { "pyright" }` — pyright is an LSP, not a null-ls source; redundant with mason-lspconfig.
-- `copilot.vim` is pinned in `lazy-lock.json` but has **no spec** in `plugins.lua`. `lazy-lock.json` is not a reliable inventory of what's installed.
-- Duplicate maps where the **later definition wins**: `<leader>e` (spell toggle at `init.lua:48` is dead; diagnostics float at `:61` wins), `th` (`:tabfirst` at `:40` dead, `:tabprev` at `:42` wins), `<leader><space>` (`:49` dead, VimWiki at `:55` wins).
-- `gD` means *type definitions* to telescope (`plugins.lua:207`) but *declaration* in `on_attach` (`lsp.lua`) — buffer-local wins in LSP buffers.
+- **none-ls + mason-null-ls** — none-ls ran with `sources = {}` (zero diagnostics/formatters) and mason-null-ls declared `pyright`, which is an LSP, not a null-ls source. Formatting is handled by the LSP servers directly (ruff for Python). Don't re-add a null-ls layer unless there's an actual source to register; prefer `conform.nvim` if a non-LSP formatter is ever needed.
+- **nvim-dap** — GPL, and had no adapters, no dap-ui, and no keymaps, so it could not debug anything.
+- **vim-closer** — unmaintained; use `nvim-autopairs` or `matchpairs` if autoclosing is wanted.
+- **`ToggleCodespell()` / `<leader>fc`** — toggled a file-local that nothing read.
+- **Three shadowed keymaps** where the second definition silently won: `th` (`:tabfirst` → moved to `tf`), `<leader>e` (en_us spell toggle → moved to `<leader>S`, since the diagnostic float owns `<leader>e`), and a bogus `"<Ctrl-space>"` literal on `<leader><space>` (dropped; VimWiki owns it).
+
+### Remaining known quirk
+
+`gD` means *type definitions* to telescope (`plugins.lua`) but *declaration* in `on_attach` (`lsp.lua`). Both are still mapped; the buffer-local LSP map wins inside LSP buffers, so `gD` behaves differently depending on the buffer. Left as-is deliberately.
 ### Version drift (this machine runs Neovim 0.12.4)
 
 Verified against the installed `nvim`, not assumed:
 
-- `vim.lsp.get_active_clients` (`lsp.lua:32`) **emits a deprecation warning** on 0.12 — use `vim.lsp.get_clients`. `vim.api.nvim_buf_set_option` (`lsp.lua:8,47,48`) still works but is deprecated; use `vim.bo[buf]`/`vim.api.nvim_set_option_value`.
-- 0.12 provides `vim.lsp.config` / `vim.lsp.enable`, the modern replacement for the `require('lspconfig').X.setup{}` style used throughout `lsp.lua`. Current style still works but is the legacy path.
-- **`williamboman/mason.nvim` and `mason-lspconfig.nvim` now redirect to `mason-org/*`.** GitHub follows the redirect so they still install, but the specs should be renamed. mason-lspconfig 2.x also changed its config API — expect breakage on update.
+- Deprecated APIs were replaced in `0094b78` / `8410e5b`: use `vim.lsp.get_clients` (not `get_active_clients`), `vim.bo[buf].opt = …` (not `nvim_buf_set_option`), and `vim.diagnostic.jump({count = ±1})` (not `goto_prev`/`goto_next`). All three of the old forms emit deprecation warnings on 0.12.
+- 0.12 provides `vim.lsp.config` / `vim.lsp.enable`, the modern replacement for the `require('lspconfig').X.setup{}` style used throughout `lsp.lua`. Current style still works but is the legacy path — the likely next migration.
+- Mason specs were renamed to **`mason-org/*`** in `f3535d4` (the `williamboman/*` paths only resolved via GitHub redirect). Note mason-lspconfig 2.x changed its config API, so an unpinned update may still break.
 - **`nvim-treesitter`'s default branch is now `main`**, a breaking rewrite: `require("nvim-treesitter.configs").setup{}` (`plugins.lua:126`) does not exist on `main`. The pin in `lazy-lock.json` is what keeps this working; an unpinned update will break Treesitter.
 - **`telescope.nvim` is pinned to `tag = "0.1.4"`** (`plugins.lua:196`) while upstream is at v0.2.x — several years stale.
 
