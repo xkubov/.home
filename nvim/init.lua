@@ -37,7 +37,7 @@ vim.api.nvim_set_keymap("n", "<C-b>", "<C-b>zz", opts)
 vim.api.nvim_set_keymap("n", "<backspace>", "<C-^>", opts)
 
 -- Tab management
-vim.api.nvim_set_keymap("n", "th", ":tabfirst<CR>", opts)
+vim.api.nvim_set_keymap("n", "tf", ":tabfirst<CR>", opts)
 vim.api.nvim_set_keymap("n", "tl", ":tabnext<CR>", opts)
 vim.api.nvim_set_keymap("n", "th", ":tabprev<CR>", opts)
 vim.api.nvim_set_keymap("n", "tt", ":tabedit<CR>", opts)
@@ -45,8 +45,7 @@ vim.api.nvim_set_keymap("n", "<C-w>c", ":tabedit<CR>", opts)
 
 -- Spell checking
 vim.api.nvim_set_keymap("n", "<leader>s", ":set invspell spelllang=sk<CR>", opts)
-vim.api.nvim_set_keymap("n", "<leader>e", ":set invspell spelllang=en_us<CR>", opts)
-vim.api.nvim_set_keymap("n", "<leader><space>", "<Ctrl-space>", opts)
+vim.api.nvim_set_keymap("n", "<leader>S", ":set invspell spelllang=en_us<CR>", opts)
 
 -- File explorer
 vim.api.nvim_set_keymap("n", "<C-e>", ":NvimTreeToggle<CR>", opts)
@@ -59,8 +58,12 @@ vim.api.nvim_set_keymap("i", "<C-d>", "<del>", opts)
 
 -- LSP diagnostics keymaps
 vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, opts)
-vim.keymap.set("n", "gp", vim.diagnostic.goto_prev, opts)
-vim.keymap.set("n", "gn", vim.diagnostic.goto_next, opts)
+vim.keymap.set("n", "gp", function()
+    vim.diagnostic.jump({ count = -1, float = true })
+end, opts)
+vim.keymap.set("n", "gn", function()
+    vim.diagnostic.jump({ count = 1, float = true })
+end, opts)
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, opts)
 
 -- Filetype-specific settings
@@ -83,12 +86,3 @@ vim.cmd([[
     autocmd Filetype vimwiki setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
     autocmd Filetype yaml setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
 ]])
-
--- Helper function for codespell toggle
-local turn_on_codespell = true
-
-function ToggleCodespell()
-    turn_on_codespell = not turn_on_codespell
-end
-
-vim.api.nvim_set_keymap("n", "<leader>fc", ":lua ToggleCodespell()<CR>", opts)
