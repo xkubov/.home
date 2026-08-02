@@ -26,21 +26,26 @@ Implications when making changes:
 
 ## Installation model
 
-`~/.config/<tool>` and `~/.<tool>rc` are **symlinks into this repo**, so edits take effect in place — no install step after editing, just reload the tool.
+Configs are installed by **symlinking the target path in `$HOME` to the file in this repo**, so edits take effect in place — no install step after editing, just reload the tool.
 
-Nothing is currently symlinked on this machine (checked: `~/.gitconfig`, `~/.config/nvim`, `~/.config/fish`, `~/.tmux.conf`, `~/.config/sketchybar`, `~/.skhdrc` are all absent or plain files). Whatever installed the current environment, it was not this repo's `Makefile`.
+There is deliberately **no installer**. A `Makefile` used to exist and was removed (commit `caa0380`) because its approach was unwanted — it also ran `rm -rf $HOME/.config` and referenced directories that no longer exist. Do not reintroduce a Makefile-based installer without asking.
 
-### The Makefile is legacy and partly destructive — do not run it
+Install a tool by hand, one at a time:
 
-`make` / `make all` / `make core` will fail or do damage. Verify before touching it:
+```sh
+ln -sfn /Users/petekubo/projects/mydots/<dir>/<file> ~/<target>
+```
 
-- **`make config` runs `rm -rf $HOME/.config`** (Makefile:61-66). It deletes the entire `~/.config` directory — every tool's config, not just this repo's. `vimc` depends on `config` (Makefile:19), so **`make vimc` wipes `~/.config`**.
-- `vimc` installs the *old* Vim config, not the current Neovim one: it symlinks `~/.config/nvim/init.vim` → `vim/.vimrc` and clones Vundle. It does not reference `nvim/` at all.
-- `core` depends on `fzfc`, which **is not defined** → `make core` and `make all` error out.
-- `bashc` and `sshc` reference `bash/` and `ssh/` directories that **do not exist** in the repo.
-- Only `gitc` and `tmuxc` are currently sound, and `tmuxc` fails if `~/.tmux.conf` already exists (no unlink guard, unlike the other targets).
+Use `ln -sfn` (not plain `ln -s`) so re-running replaces an existing symlink instead of nesting one inside a directory. **Back up first if the target is a real file** — check with `[ -L path ]` before overwriting, since a real file there may hold settings not in the repo.
 
-Treat the Makefile as unmaintained. Prefer creating symlinks explicitly, or rewrite the target properly before running it.
+### Currently symlinked
+
+| Target | Source | Status |
+|---|---|---|
+| `~/.gitconfig` | `git/.gitconfig` | linked (previous real file saved to `~/.gitconfig.bak.pre-dots`) |
+| `~/.tmux.conf` | `tmux/.tmux.conf` | linked |
+
+Everything else (`nvim`, `fish`, `sketchybar`, `skhd`, `yabai`, `alacritty`) is **not yet linked** — those live as independent files outside the repo. Link them one tool at a time as they're reviewed.
 
 ## Applying changes per tool
 
@@ -56,6 +61,15 @@ Treat the Makefile as unmaintained. Prefer creating symlinks explicitly, or rewr
 | Alacritty | `alacritty/alacritty.toml` | Live-reloads on save |
 
 `brew/core` is a plain newline-separated package list, not a Brewfile: install with `xargs brew install < brew/core`. It lists `exa`, which is deprecated/unmaintained, while `fish/config.fish` aliases `ls` to `eza` (the successor) — the list is out of date with the shell config.
+
+### External dependencies (all MIT-licensed, no proprietary software)
+
+Audited for `git/.gitconfig` and `tmux/.tmux.conf`:
+
+- **`tmux/.tmux.conf` has zero external dependencies.** No TPM, no plugins, no `run-shell`. The `#{prefix_highlight}` in `status-right` (line 49) is from tmux-prefix-highlight, which is **not installed** — an unresolved format string renders as empty, so it degrades silently rather than breaking.
+- **`git/.gitconfig` needs `fzf`** (MIT) for 4 interactive aliases: `api`, `bl`, `chi`, `chic`. **fzf is not currently installed** — those 4 aliases fail until `brew install fzf`. Every other alias is pure git plus POSIX tools (`sed`, `awk`, `xargs`, `uniq`, `rm`, `echo`).
+- **`delta`** (git-delta, MIT) is installed and set as `core.pager`.
+- `include.path = ~/.config/delta/themes.gitconfig` **does not exist**, so `delta.features = arctic-fox` is undefined. Verified harmless: git ignores unreadable includes and delta falls back to its default theme without erroring. To get the intended theme, fetch a delta themes file that defines `arctic-fox`.
 
 ## Neovim architecture
 
@@ -107,7 +121,7 @@ Configs contain stale home directories from other machines. The real home here i
 - `git/.gitconfig` previously had `include.path = /Users/kubov/.config/delta/themes.gitconfig`; now `~/.config/delta/themes.gitconfig`. Prefer `~` over absolute homes in new config.
 - nvim's alpha dashboard hardcodes `$HOME/projects` and `~/vimwiki/index.wiki`; pyright's `stubPath` points at a `python-type-stubs` directory that no plugin ever creates (harmless only because `reportMissingTypeStubs = false`).
 
-**`git/.gitconfig` currently sets `core.pager = delta` and `delta.features = arctic-fox`, but `delta` is not installed and `~/.config/delta/` does not exist** — git paging is broken on this branch until `brew install git-delta` plus a themes file that defines `arctic-fox`.
+`git/.gitconfig` sets `delta.features = arctic-fox` via an `include` of `~/.config/delta/themes.gitconfig`, which does not exist — see the dependency notes above. Harmless, but the theme is not actually applied.
 
 ## Other conventions
 
