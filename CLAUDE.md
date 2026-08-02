@@ -71,6 +71,24 @@ Audited for `git/.gitconfig` and `tmux/.tmux.conf`:
 - **`delta`** (git-delta, MIT) is installed and set as `core.pager`.
 - `include.path = ~/.config/delta/themes.gitconfig` **does not exist**, so `delta.features = arctic-fox` is undefined. Verified harmless: git ignores unreadable includes and delta falls back to its default theme without erroring. To get the intended theme, fetch a delta themes file that defines `arctic-fox`.
 
+## Neovim plugin licenses
+
+Audited via the GitHub license API against the specs in `lua/plugins.lua`. **Nothing proprietary is currently declared**, but two entries need attention and several are copyleft — relevant if any config is ever shared into an employer context.
+
+**Proprietary — do not reintroduce:**
+- `github/copilot.vim` is licensed under the **GitHub Terms of Service**, not an open-source license ("All Rights Reserved"). It is **not** in `plugins.lua` — only a stale entry in `lazy-lock.json`. Removing that lock line is safe; the plugin is not installed. Do not re-add Copilot without checking employer policy on AI coding assistants.
+
+**No license at all (all rights reserved by default):**
+- `ThePrimeagen/vim-be-good` — no LICENSE file, no license statement in the README. Legally unredistributable, and it is only a vim-motions practice game. Best candidate for removal.
+- `tpope/vim-fugitive` — no LICENSE file, but `doc/fugitive.txt` states "License: Same terms as Vim itself", i.e. the **Vim License** (GPL-compatible, charityware). Fine to keep; the API just can't detect it.
+
+**Copyleft (fine for personal use; note before redistributing this repo):**
+- GPL-3.0: `nvim-tree/nvim-tree.lua`, `mfussenegger/nvim-dap`, `BlakeJC94/alpha-nvim-fortune`
+- AGPL-3.0: `jay-babu/mason-null-ls.nvim` — strongest copyleft here, and this plugin is misconfigured (see below), so removing it is a double win.
+- Vim License: `tpope/vim-fugitive`
+
+Everything else is permissive: MIT (`nvim-cmp`, `cmp-nvim-lsp`, `plenary`, `telescope`, `lualine`, `gitsigns`, `nightfox`, `Comment.nvim`, `indent-blankline`, `vim-matchup`, `vim-closer`, `nvim-web-devicons`, `alpha-nvim`, `vimwiki`), Apache-2.0 (`lazy.nvim`, `nvim-lspconfig`, `LuaSnip`, `cmp_luasnip`, `nvim-treesitter`, `mason`, `mason-lspconfig`), BSD-3-Clause (`undotree`), Unlicense (`none-ls`).
+
 ## Neovim architecture
 
 `init.lua` (94 lines) holds only options, keymaps, and per-filetype indent autocmds. Everything else is in `lua/`.
@@ -100,7 +118,15 @@ Don't assume these work — verify before building on them:
 - `copilot.vim` is pinned in `lazy-lock.json` but has **no spec** in `plugins.lua`. `lazy-lock.json` is not a reliable inventory of what's installed.
 - Duplicate maps where the **later definition wins**: `<leader>e` (spell toggle at `init.lua:48` is dead; diagnostics float at `:61` wins), `th` (`:tabfirst` at `:40` dead, `:tabprev` at `:42` wins), `<leader><space>` (`:49` dead, VimWiki at `:55` wins).
 - `gD` means *type definitions* to telescope (`plugins.lua:207`) but *declaration* in `on_attach` (`lsp.lua`) — buffer-local wins in LSP buffers.
-- Deprecated APIs still in use: `vim.api.nvim_buf_set_option` and `vim.lsp.get_active_clients` (`lsp.lua:8,32,47,48`); the `williamboman/mason*` forks are archived (upstream is `mason-org/*`).
+### Version drift (this machine runs Neovim 0.12.4)
+
+Verified against the installed `nvim`, not assumed:
+
+- `vim.lsp.get_active_clients` (`lsp.lua:32`) **emits a deprecation warning** on 0.12 — use `vim.lsp.get_clients`. `vim.api.nvim_buf_set_option` (`lsp.lua:8,47,48`) still works but is deprecated; use `vim.bo[buf]`/`vim.api.nvim_set_option_value`.
+- 0.12 provides `vim.lsp.config` / `vim.lsp.enable`, the modern replacement for the `require('lspconfig').X.setup{}` style used throughout `lsp.lua`. Current style still works but is the legacy path.
+- **`williamboman/mason.nvim` and `mason-lspconfig.nvim` now redirect to `mason-org/*`.** GitHub follows the redirect so they still install, but the specs should be renamed. mason-lspconfig 2.x also changed its config API — expect breakage on update.
+- **`nvim-treesitter`'s default branch is now `main`**, a breaking rewrite: `require("nvim-treesitter.configs").setup{}` (`plugins.lua:126`) does not exist on `main`. The pin in `lazy-lock.json` is what keeps this working; an unpinned update will break Treesitter.
+- **`telescope.nvim` is pinned to `tag = "0.1.4"`** (`plugins.lua:196`) while upstream is at v0.2.x — several years stale.
 
 ## sketchybar architecture
 
