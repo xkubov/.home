@@ -135,7 +135,7 @@ Verified against the installed `nvim`, not assumed:
 
 - Deprecated APIs were replaced in `0094b78` / `8410e5b`: use `vim.lsp.get_clients` (not `get_active_clients`), `vim.bo[buf].opt = …` (not `nvim_buf_set_option`), and `vim.diagnostic.jump({count = ±1})` (not `goto_prev`/`goto_next`).
 - Mason specs were renamed to **`mason-org/*`** in `f3535d4` (the `williamboman/*` paths only resolved via GitHub redirect). Note mason-lspconfig 2.x changed its config API, so an unpinned update may still break.
-- **`telescope.nvim` is pinned to `tag = "0.1.4"`** while upstream is at v0.2.x — several years stale. Unpinning is untested; do it deliberately.
+- **`telescope.nvim` uses `version = "^0.2"`** (unpinned from a stale `tag = "0.1.4"` in `9cfa329`). v0.2.0 exists to fix 0.12 deprecations; the old 0.1.4 called `vim.tbl_islist`, deprecated on 0.12. Prefer a `version` range over a fixed `tag` so patch releases land, with `lazy-lock.json` holding the exact commit.
 
 ### Treesitter is on the `main` branch (rewritten API)
 
