@@ -57,7 +57,6 @@ require("lazy").setup({
                     "pyright",
                     "ruff",
                     "ts_ls",
-                    "gopls",
                 },
             })
         end,
@@ -88,32 +87,47 @@ require("lazy").setup({
         end,
     },
 
-    -- Treesitter
+    -- Treesitter.
+    -- This is the `main` branch, a full rewrite with a different API: there is
+    -- no `nvim-treesitter.configs`, no `ensure_installed`, and no `highlight`
+    -- table. Parsers are installed imperatively and highlighting is started
+    -- per-buffer by Neovim itself. The old `master` branch is frozen and does
+    -- not support Neovim 0.12, so pinning back is not an option.
     {
         "nvim-treesitter/nvim-treesitter",
+        lazy = false, -- main does not support lazy-loading
         build = ":TSUpdate",
         config = function()
-            require("nvim-treesitter.configs").setup({
-                ensure_installed = {
-                    "bash",
-                    "lua",
-                    "markdown",
-                    "python",
-                    "rust",
-                },
-                sync_install = false,
-                auto_install = true,
-                highlight = {
-                    enable = true,
-                    disable = function(lang, buf)
-                        local max_filesize = 1024 * 1024 -- 1 MB
-                        local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
-                        if ok and stats and stats.size > max_filesize then
-                            return true
-                        end
-                    end,
-                    additional_vim_regex_highlighting = false,
-                },
+            local parsers = { "bash", "lua", "markdown", "python", "rust" }
+
+            require("nvim-treesitter").setup()
+
+            -- Install any parser that isn't present yet. Requires tree-sitter-cli.
+            local ok, ts = pcall(require, "nvim-treesitter")
+            if ok and ts.install then
+                local installed = {}
+                for _, p in ipairs(ts.get_installed and ts.get_installed() or {}) do
+                    installed[p] = true
+                end
+                local missing = vim.tbl_filter(function(p)
+                    return not installed[p]
+                end, parsers)
+                if #missing > 0 then
+                    ts.install(missing)
+                end
+            end
+
+            -- Highlighting is now Neovim's job; start it per buffer, skipping
+            -- files over 1 MB.
+            vim.api.nvim_create_autocmd("FileType", {
+                callback = function(args)
+                    local max_filesize = 1024 * 1024 -- 1 MB
+                    local stat_ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(args.buf))
+                    if stat_ok and stats and stats.size > max_filesize then
+                        return
+                    end
+                    pcall(vim.treesitter.start, args.buf)
+                end,
             })
         end,
     },

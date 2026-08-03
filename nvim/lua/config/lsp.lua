@@ -70,11 +70,17 @@ local lsp_flags = {
 }
 
 function M.setup()
-    -- Configure specific language servers
-    require('lspconfig').ruff.setup {
+    -- Defaults applied to every server. nvim-lspconfig ships the per-server
+    -- boilerplate (cmd, filetypes, root markers) as `lsp/<name>.lua` runtime
+    -- files, which vim.lsp.config picks up automatically; we only add our own
+    -- on_attach/capabilities and any server-specific settings on top.
+    vim.lsp.config("*", {
         on_attach = on_attach,
         capabilities = capabilities,
         flags = lsp_flags,
+    })
+
+    vim.lsp.config("ruff", {
         init_options = {
             settings = {
                 -- Enable ruff formatting and linting only
@@ -86,12 +92,9 @@ function M.setup()
                 },
             },
         },
-    }
+    })
 
-    require('lspconfig').pyright.setup {
-        on_attach = on_attach,
-        capabilities = capabilities,
-        flags = lsp_flags,
+    vim.lsp.config("pyright", {
         settings = {
             pyright = {
                 disableOrganizeImports = true, -- Using Ruff for import organization
@@ -103,31 +106,13 @@ function M.setup()
                     useLibraryCodeForTypes = true,
                     autoImportCompletions = true,
                     diagnosticMode = "workspace",
-                    stubPath = vim.fn.stdpath("data") .. "/lazy/python-type-stubs",
                     reportMissingTypeStubs = false,
                 },
             },
         },
-    }
-
-    require("lspconfig")["ts_ls"].setup({
-        on_attach = on_attach,
-        flags = lsp_flags,
-        capabilities = capabilities,
     })
 
-    require("lspconfig")["rust_analyzer"].setup({
-        on_attach = on_attach,
-        flags = lsp_flags,
-        settings = {
-            ["rust-analyzer"] = {},
-        },
-        capabilities = capabilities,
-    })
-
-    require("lspconfig").lua_ls.setup({
-        on_attach = on_attach,
-        flags = lsp_flags,
+    vim.lsp.config("lua_ls", {
         settings = {
             Lua = {
                 diagnostics = {
@@ -135,13 +120,17 @@ function M.setup()
                 },
             },
         },
-        capabilities = capabilities,
     })
 
-    require("lspconfig")["gopls"].setup({
-        on_attach = on_attach,
-        flags = lsp_flags,
-        capabilities = capabilities,
+    -- Keep this list in sync with `ensure_installed` in lua/plugins.lua.
+    -- gopls is intentionally absent: mason builds it with `go install`, which
+    -- needs a Go toolchain that isn't installed. Add both together if Go arrives.
+    vim.lsp.enable({
+        "ruff",
+        "pyright",
+        "ts_ls",
+        "rust_analyzer",
+        "lua_ls",
     })
 
     -- Setup format on save for Python files (using ruff)
