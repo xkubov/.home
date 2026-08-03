@@ -44,8 +44,15 @@ Use `ln -sfn` (not plain `ln -s`) so re-running replaces an existing symlink ins
 |---|---|---|
 | `~/.gitconfig` | `git/.gitconfig` | linked (previous real file saved to `~/.gitconfig.bak.pre-dots`) |
 | `~/.tmux.conf` | `tmux/.tmux.conf` | linked |
+| `~/.config/nvim` | `nvim/` | linked (whole directory) |
 
-Everything else (`nvim`, `fish`, `sketchybar`, `skhd`, `yabai`, `alacritty`) is **not yet linked** — those live as independent files outside the repo. Link them one tool at a time as they're reviewed.
+Everything else (`fish`, `sketchybar`, `skhd`, `yabai`, `alacritty`) is **not yet linked** — those live as independent files outside the repo. Link them one tool at a time as they're reviewed.
+
+**`lazy-lock.json` is rewritten by `:Lazy sync`**, which updates every plugin to its branch head. It is a tracked file, so a sync produces a repo diff — commit it deliberately, and expect breaking upstream changes to arrive this way (that's how the Treesitter rewrite landed). Use `:Lazy restore` to roll plugins back to the committed lockfile.
+
+### Verified working after install
+
+`nvim` starts clean with no errors, warnings, or deprecation notices. Confirmed end-to-end: Treesitter highlighting active on a Python buffer with 6 parsers compiled; `pyright` + `ruff` both attach and report diagnostics; format-on-save reformats Python via ruff. 5 servers installed under `~/.local/share/nvim/mason/bin`.
 
 ## Applying changes per tool
 
@@ -103,9 +110,9 @@ When adding a plugin, check its license first — prefer permissive, and never a
 
 ### Adding an LSP server requires two edits
 
-`mason-lspconfig` here is configured **without** `handlers`/`setup_handlers`, so mason only *installs* — all real config lives in `lsp.lua`. Adding a server to `ensure_installed` alone does nothing, and configuring one in `lsp.lua` alone means it never attaches unless the binary happens to be on `PATH`.
+`mason-lspconfig` is configured **without** `handlers`/`setup_handlers`, so mason only *installs*. Activation is separate. Adding a server to `ensure_installed` alone does nothing; adding it to `vim.lsp.enable` alone means it never attaches unless the binary is already on `PATH`.
 
-**Both lists must be edited together**: `ensure_installed` in `plugins.lua` and a `require('lspconfig').X.setup{}` block in `lsp.lua`. They are currently in sync at 6 servers — `lua_ls`, `rust_analyzer`, `pyright`, `ruff`, `ts_ls`, `gopls`. (`ts_ls` and `gopls` had been configured but not installed, so they silently never attached; fixed in `f3535d4`.) Note `gopls` is installed but only useful once a Go toolchain exists — none is installed on this machine.
+So: add the name to `ensure_installed` in `plugins.lua` **and** to `vim.lsp.enable({...})` in `lsp.lua`. Only add a `vim.lsp.config("<name>", {...})` block if you need to override lspconfig's shipped defaults.
 
 Python is deliberately split: **ruff** formats, lints, and owns import organization; **pyright** does type checking with `disableOrganizeImports = true` (`lsp.lua:97`). Format-on-save exists **only for `*.py`** (`lsp.lua:148-153`); everything else formats manually via `<leader>f`.
 
@@ -126,11 +133,30 @@ Removed in `8d2af1c` and `8410e5b`; if a future edit looks like it's adding thes
 
 Verified against the installed `nvim`, not assumed:
 
-- Deprecated APIs were replaced in `0094b78` / `8410e5b`: use `vim.lsp.get_clients` (not `get_active_clients`), `vim.bo[buf].opt = …` (not `nvim_buf_set_option`), and `vim.diagnostic.jump({count = ±1})` (not `goto_prev`/`goto_next`). All three of the old forms emit deprecation warnings on 0.12.
-- 0.12 provides `vim.lsp.config` / `vim.lsp.enable`, the modern replacement for the `require('lspconfig').X.setup{}` style used throughout `lsp.lua`. Current style still works but is the legacy path — the likely next migration.
+- Deprecated APIs were replaced in `0094b78` / `8410e5b`: use `vim.lsp.get_clients` (not `get_active_clients`), `vim.bo[buf].opt = …` (not `nvim_buf_set_option`), and `vim.diagnostic.jump({count = ±1})` (not `goto_prev`/`goto_next`).
 - Mason specs were renamed to **`mason-org/*`** in `f3535d4` (the `williamboman/*` paths only resolved via GitHub redirect). Note mason-lspconfig 2.x changed its config API, so an unpinned update may still break.
-- **`nvim-treesitter`'s default branch is now `main`**, a breaking rewrite: `require("nvim-treesitter.configs").setup{}` (`plugins.lua:126`) does not exist on `main`. The pin in `lazy-lock.json` is what keeps this working; an unpinned update will break Treesitter.
-- **`telescope.nvim` is pinned to `tag = "0.1.4"`** (`plugins.lua:196`) while upstream is at v0.2.x — several years stale.
+- **`telescope.nvim` is pinned to `tag = "0.1.4"`** while upstream is at v0.2.x — several years stale. Unpinning is untested; do it deliberately.
+
+### Treesitter is on the `main` branch (rewritten API)
+
+Migrated in `92aad09`. The old `master` API is **gone**, and going back is not an option — `master` is frozen upstream and its README lists Neovim 0.12 as explicitly unsupported.
+
+Consequences for editing the spec:
+- There is **no `nvim-treesitter.configs` module**, no `ensure_installed`, and no `highlight = {}` table. Don't reintroduce them; that's what broke on first sync.
+- Parsers are installed imperatively via `require("nvim-treesitter").install({...})`. The spec installs only the parsers not already present.
+- **Highlighting is Neovim's job now**: a `FileType` autocmd calls `vim.treesitter.start()`, keeping the 1 MB size skip. Enabling highlighting for a new filetype needs nothing — it's generic.
+- **Requires `tree-sitter-cli`** (`brew install tree-sitter-cli`, ≥0.26.1) to compile parsers, plus a C compiler. Without it, every parser install fails with `ENOENT: 'tree-sitter'`.
+- `main` **does not support lazy-loading**, hence `lazy = false`.
+
+### LSP uses `vim.lsp.config`, not `require('lspconfig')`
+
+Also migrated in `92aad09`, because `require('lspconfig')` now emits a deprecation warning and is slated for removal in nvim-lspconfig v3.0.0.
+
+- nvim-lspconfig's role is now just shipping ~400 `lsp/<name>.lua` runtime files (cmd, filetypes, root markers). `vim.lsp.config` picks those up automatically, so per-server blocks only carry *our* overrides.
+- Shared `on_attach` / `capabilities` / `flags` are registered once via `vim.lsp.config("*", {...})`.
+- Servers are activated by `vim.lsp.enable({...})` at the end of `M.setup()`.
+- **`vim.lsp.enable` in `lsp.lua` and `ensure_installed` in `plugins.lua` must stay in sync** — mason installs, `vim.lsp.enable` activates. Currently 5 servers: `ruff`, `pyright`, `ts_ls`, `rust_analyzer`, `lua_ls`.
+- **`gopls` is deliberately absent from both.** mason builds it with `go install`, and there's no Go toolchain on this machine, so it failed on every sync. Add it to both lists together if Go is installed later.
 
 ## sketchybar architecture
 
